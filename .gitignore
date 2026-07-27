@@ -1,0 +1,48 @@
+# dependencies
+# installed packages for both frontend and backend - always regenerable via npm install
+node_modules
+
+# yarn (unused here, but keeping in case that ever changes)
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+coverage
+
+# next.js build output (frontend)
+/frontend/.next/
+/frontend/out/
+
+# production build output
+build
+
+
+# prisma generated client (backend)
+# regenerated automatically by `npx prisma generate` / migrate - never hand-edited
+/backend/src/generated/prisma
+
+# misc OS/editor files
+.DS_Store
+*.pem
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# environment variables
+# contains DATABASE_URL, admin password hash, etc.
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
