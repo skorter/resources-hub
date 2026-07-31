@@ -1,7 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useEffect } from "react";
+import { getResources } from "@/lib/api";
 
 export default function Home() {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resources = await getResources();
+        console.log("Resources:", resources);
+      } catch (error) {
+        console.error("Error fetching resources:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className={styles.page}>
       <main className={styles.main}>

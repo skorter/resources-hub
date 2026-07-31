@@ -11,6 +11,7 @@ model Resource {
   id Int @id @default(autoincrement())
   title String
   description String
+  logo String?
   type Type @default(Tool)
   url String
   createdAt DateTime @default(now())
