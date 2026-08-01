@@ -3,14 +3,14 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import { useEffect } from "react";
-import { getResources } from "@/lib/api";
+import { getResourceById } from "@/lib/api/resources";
 
 export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resources = await getResources();
-        console.log("Resources:", resources);
+        const resource = await getResourceById(1);
+        console.log("Resource:", resource);
       } catch (error) {
         console.error("Error fetching resources:", error);
       }

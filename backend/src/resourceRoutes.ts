@@ -95,6 +95,10 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
           connect: tags.map((tagId: number) => ({ id: tagId })),
         },
       },
+      include: {
+        category: true,
+        tags: true,
+      },
     });
   } catch (error) {
     res
@@ -155,6 +159,10 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     updatedResource = await prisma.resource.update({
       where: { id: Number(id) },
       data: data,
+      include: {
+        category: true,
+        tags: true,
+      },
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -187,6 +195,10 @@ router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
   try {
     deletedResource = await prisma.resource.delete({
       where: { id: Number(id) },
+      include: {
+        category: true,
+        tags: true,
+      },
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
