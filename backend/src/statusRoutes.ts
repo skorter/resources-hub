@@ -7,61 +7,67 @@ import prisma from "./prisma.ts";
 
 const router = Router();
 
-// GET all tags
+// GET all statuses
 router.get("/", async (req: Request, res: Response) => {
-  let tags = null;
+  let statuses = null;
 
   try {
-    tags = await prisma.tag.findMany();
+    statuses = await prisma.status.findMany();
   } catch (error) {
-    res.status(500).send({ error: "An error occurred while fetching tags" });
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching statuses" });
     return;
   }
 
-  res.send(tags);
+  res.send(statuses);
 });
 
-// GET a single tag by ID
+// GET a single status by ID
 router.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  let tag = null;
+  let status = null;
 
   try {
-    tag = await prisma.tag.findUnique({
+    status = await prisma.status.findUnique({
       where: { id: Number(id) },
     });
   } catch (error) {
-    res.status(500).send({ error: "An error occurred while fetching the tag" });
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching the status" });
     return;
   }
 
-  if (!tag) {
-    res.status(404).send({ error: "Tag not found" });
+  if (!status) {
+    res.status(404).send({ error: "Status not found" });
     return;
   }
 
-  res.send(tag);
+  res.send(status);
 });
 
-// POST a new tag
+// POST a new status
 router.post("/", authMiddleware, async (req: Request, res: Response) => {
   const { name }: { name: string } = req.body;
 
-  let createdTag = null;
+  let createdStatus = null;
 
   try {
-    createdTag = await prisma.tag.create({
+    createdStatus = await prisma.status.create({
       data: { name },
     });
   } catch (error) {
-    res.status(500).send({ error: "An error occurred while creating the tag" });
+    res
+      .status(500)
+      .send({ error: "An error occurred while creating the status" });
     return;
   }
-  res.send(createdTag);
+  res.send(createdStatus);
 });
 
-// PATCH (update) a tag by ID
+// PATCH (update) a status by ID
 router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name }: { name: string } = req.body;
@@ -72,64 +78,64 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     ...(name !== undefined && { name }),
   };
 
-  let updatedTag = null;
+  let updatedStatus = null;
 
   try {
-    updatedTag = await prisma.tag.update({
+    updatedStatus = await prisma.status.update({
       where: { id: Number(id) },
       data: data,
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        res.status(404).send({ error: "Tag not found" });
+        res.status(404).send({ error: "Status not found" });
         return;
       } else {
         res
           .status(500)
-          .send({ error: "An error occurred while updating the tag" });
+          .send({ error: "An error occurred while updating the status" });
         return;
       }
     } else {
       res.status(500).send({
-        error: "An unexpected error occurred while updating the tag",
+        error: "An unexpected error occurred while updating the status",
       });
       return;
     }
   }
-  res.send(updatedTag);
+  res.send(updatedStatus);
 });
 
-// DELETE a tag by ID
+// DELETE a status by ID
 router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  let deletedTag = null;
+  let deletedStatus = null;
 
   try {
-    deletedTag = await prisma.tag.delete({
+    deletedStatus = await prisma.status.delete({
       where: { id: Number(id) },
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        res.status(404).send({ error: "Tag not found" });
+        res.status(404).send({ error: "Status not found" });
         return;
       } else {
         res
           .status(500)
-          .send({ error: "An error occurred while deleting the tag" });
+          .send({ error: "An error occurred while deleting the status" });
         return;
       }
     } else {
       res.status(500).send({
-        error: "An unexpected error occurred while deleting the tag",
+        error: "An unexpected error occurred while deleting the status",
       });
       return;
     }
   }
 
-  res.send(deletedTag);
+  res.send(deletedStatus);
 });
 
 export default router;

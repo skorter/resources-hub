@@ -114,6 +114,17 @@ router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
   let deletedCategory = null;
 
   try {
+    const resourcesInCategory = await prisma.resource.count({
+      where: { categories: { some: { id: Number(id) } } },
+    });
+
+    if (resourcesInCategory > 0) {
+      res.status(400).send({
+        error: "Cannot delete category with associated resources",
+      });
+      return;
+    }
+
     deletedCategory = await prisma.category.delete({
       where: { id: Number(id) },
     });
@@ -121,12 +132,6 @@ router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
         res.status(404).send({ error: "Category not found" });
-        return;
-      } else if (error.code === "P2039") {
-        res.status(409).send({
-          error:
-            "Cannot delete category while resources are still assigned to it",
-        });
         return;
       } else {
         res

@@ -15,8 +15,8 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     resources = await prisma.resource.findMany({
       include: {
-        category: true,
-        tags: true,
+        categories: true,
+        status: true,
       },
     });
   } catch (error) {
@@ -39,8 +39,8 @@ router.get("/:id", async (req: Request, res: Response) => {
     resource = await prisma.resource.findUnique({
       where: { id: Number(id) },
       include: {
-        category: true,
-        tags: true,
+        categories: true,
+        status: true,
       },
     });
   } catch (error) {
@@ -66,16 +66,16 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     logo,
     type,
     url,
-    categoryId,
-    tags,
+    categories,
+    statusId,
   }: {
     title: string;
     description: string;
     logo?: string;
     type: Type;
     url: string;
-    categoryId: number;
-    tags: number[];
+    categories: number[];
+    statusId?: number;
   } = req.body;
 
   let createdResource = null;
@@ -88,16 +88,16 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
         logo,
         type,
         url,
-        category: {
-          connect: { id: categoryId },
+        categories: {
+          connect: categories.map((id) => ({ id })),
         },
-        tags: {
-          connect: tags.map((tagId: number) => ({ id: tagId })),
-        },
+        ...(statusId !== undefined && {
+          status: { connect: { id: statusId } },
+        }),
       },
       include: {
-        category: true,
-        tags: true,
+        categories: true,
+        status: true,
       },
     });
   } catch (error) {
@@ -119,16 +119,16 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     logo,
     type,
     url,
-    categoryId,
-    tags,
+    categories,
+    statusId,
   }: {
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
     logo?: string;
-    type: Type;
-    url: string;
-    categoryId: number;
-    tags: number[];
+    type?: Type;
+    url?: string;
+    categories?: number[];
+    statusId?: number;
   } = req.body;
 
   const data: {
@@ -137,19 +137,19 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     logo?: string;
     type?: Type;
     url?: string;
-    category?: { connect: { id: number } };
-    tags?: { connect: { id: number }[] };
+    categories?: { set: { id: number }[] };
+    status?: { connect: { id: number } };
   } = {
     ...(title !== undefined && { title }),
     ...(description !== undefined && { description }),
     ...(logo !== undefined && { logo }),
     ...(type !== undefined && { type }),
     ...(url !== undefined && { url }),
-    ...(categoryId !== undefined && {
-      category: { connect: { id: categoryId } },
+    ...(categories !== undefined && {
+      categories: { set: categories.map((id) => ({ id })) },
     }),
-    ...(tags !== undefined && {
-      tags: { connect: tags.map((tagId: number) => ({ id: tagId })) },
+    ...(statusId !== undefined && {
+      status: { connect: { id: statusId } },
     }),
   };
 
@@ -160,8 +160,8 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       data: data,
       include: {
-        category: true,
-        tags: true,
+        categories: true,
+        status: true,
       },
     });
   } catch (error) {
@@ -196,8 +196,8 @@ router.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
     deletedResource = await prisma.resource.delete({
       where: { id: Number(id) },
       include: {
-        category: true,
-        tags: true,
+        categories: true,
+        status: true,
       },
     });
   } catch (error) {

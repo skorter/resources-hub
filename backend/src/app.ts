@@ -40,14 +40,14 @@ app.use("/resources", resourceRoutes);
 import categoryRoutes from "./categoryRoutes.ts";
 app.use("/categories", categoryRoutes);
 
-// TAGS
-import tagsRoutes from "./tagsRoutes.ts";
-app.use("/tags", tagsRoutes);
+// STATUSES
+import statusRoutes from "./statusRoutes.ts";
+app.use("/statuses", statusRoutes);
 
 // AUTH
 import authRoutes from "./authRoutes.ts";
 app.use("/auth", authRoutes);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT!}`);
 });

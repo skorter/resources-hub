@@ -12,12 +12,12 @@ model Resource {
   title String
   description String
   logo String?
-  type Type @default(Tool)
+  type Type @default(Tools)
   url String
   createdAt DateTime @default(now())
-  tags Tag[]
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  status Status? @relation(fields: [statusId], references: [id])
+  statusId Int?
+  categories Category[]
 }
 
 model Category {
@@ -26,13 +26,18 @@ model Category {
   resources Resource[]
 }
 
-model Tag{
+model Status {
   id Int @id @default(autoincrement())
   name String
   resources Resource[]
 }
 
 enum Type {
-  Tool
+  Tools
   Docs
+  Libraries
+  Inspiration
+  Services
+  Extensions
+  Social
 }
