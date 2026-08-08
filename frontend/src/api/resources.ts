@@ -1,11 +1,15 @@
-import type { Resource } from "../types";
+import type { Resource } from "../lib/types";
+import type { Type } from "../../../backend/src/generated/prisma/enums";
 
 // GET all resources
 const getResources = async (): Promise<Resource[] | { error: string }> => {
   try {
-    const response = await fetch("http://localhost:3000/resources", {
-      method: "GET",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -26,9 +30,12 @@ const getResourceById = async (
   id: number,
 ): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/resources/${id}`, {
-      method: "GET",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${id}`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -49,20 +56,23 @@ const createResource = async (resource: {
   title: string;
   description: string;
   logo?: string;
-  type: string;
+  type: Type;
   url: string;
-  categoryId: number;
-  tags: number[];
+  categories: number[];
+  statusId?: number;
 }): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch("http://localhost:3000/resources", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(resource),
       },
-      credentials: "include",
-      body: JSON.stringify(resource),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -85,21 +95,24 @@ const updateResource = async (
     title?: string;
     description?: string;
     logo?: string;
-    type?: string;
+    type?: Type;
     url?: string;
-    categoryId?: number;
-    tags?: number[];
+    categories?: number[];
+    statusId?: number;
   },
 ): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/resources/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(resource),
       },
-      credentials: "include",
-      body: JSON.stringify(resource),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -120,10 +133,13 @@ const deleteResource = async (
   id: number,
 ): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/resources/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();

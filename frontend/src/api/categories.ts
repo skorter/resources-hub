@@ -1,11 +1,14 @@
-import type { Category } from "../types";
+import type { Category } from "../lib/types";
 
 // GET all categories
 const getCategories = async (): Promise<Category[] | { error: string }> => {
   try {
-    const response = await fetch("http://localhost:3000/categories", {
-      method: "GET",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/categories`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -26,9 +29,12 @@ const getCategoryById = async (
   id: number,
 ): Promise<Category | { error: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/categories/${id}`, {
-      method: "GET",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/${id}`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -49,14 +55,17 @@ const createCategory = async (category: {
   name: string;
 }): Promise<Category | { error: string }> => {
   try {
-    const response = await fetch("http://localhost:3000/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/categories`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(category),
       },
-      credentials: "include",
-      body: JSON.stringify(category),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -78,14 +87,17 @@ const updateCategory = async (
   category: { name?: string },
 ): Promise<Category | { error: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/categories/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(category),
       },
-      credentials: "include",
-      body: JSON.stringify(category),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -106,10 +118,13 @@ const deleteCategory = async (
   id: number,
 ): Promise<Category | { error: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/categories/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/categories/${id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();

@@ -1,20 +1,21 @@
+import type { Type } from "../../../backend/src/generated/prisma/enums";
+
 export type Resource = {
   id: number;
   title: string;
   description: string;
   logo?: string;
-  type: string;
+  type: Type;
   url: string;
   createdAt: string;
-  categoryId: number;
-  category: {
-    id: number;
-    name: string;
-  };
-  tags: {
+  categories: {
     id: number;
     name: string;
   }[];
+  status?: {
+    id: number;
+    name: string;
+  };
 };
 
 export type Category = {
@@ -22,7 +23,7 @@ export type Category = {
   name: string;
 };
 
-export type Tag = {
+export type Status = {
   id: number;
   name: string;
 };
