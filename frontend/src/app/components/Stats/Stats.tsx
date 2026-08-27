@@ -23,18 +23,26 @@ export default async function Stats() {
     return <p>Error: {categories.error}</p>;
   }
 
-  const totalResources = Math.floor(resources.length);
+  const totalResources = Math.floor(resources.length / 5) * 5;
   const totalGalleries = Object.keys(typeMeta).length;
   const totalCategories = Math.floor(categories.length);
 
   return (
     <section className={styles.stats}>
-      <ul className={styles.statsList}>
-        <li className={styles.statItem}>{totalResources}+ Resources</li>
-        <li className={styles.statItem}>{totalGalleries} Galleries</li>
-        <li className={styles.statItem}>{totalCategories} Categories</li>
-        <li className={styles.statItem}>No account required</li>
-        <li className={styles.statItem}>No paid promotions</li>
+      <ul className={styles.statsListTopRow}>
+        <li className={styles.statItem}>
+          <strong>{totalResources}+</strong> resources
+        </li>
+        <li className={styles.statItem}>
+          <strong>{totalGalleries}</strong> galleries
+        </li>
+        <li className={styles.statItem}>
+          <strong>{totalCategories}</strong> categories
+        </li>
+      </ul>
+      <ul className={styles.statsListBottomRow}>
+        <li className={styles.statItem}>no account required</li>
+        <li className={styles.statItem}>no paid promotions</li>
       </ul>
     </section>
   );

@@ -1,0 +1,34 @@
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .statsListTopRow,
+  .statsListBottomRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .statItem {
+      position: relative;
+      padding: 0 1rem;
+      color: var(--stats-text-color);
+
+      strong {
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      &:not(:last-child)::after {
+        content: "·";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(50%, -50%);
+        font-size: 1.5rem;
+        color: var(--stats-text-color);
+      }
+    }
+  }
+}

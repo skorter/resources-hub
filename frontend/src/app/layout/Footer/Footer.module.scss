@@ -3,13 +3,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: auto;
+  padding: 0.5rem 0;
 
   .text {
     font-size: 0.95rem;
 
+    .icon {
+      font-size: 1.15rem;
+      color: var(--primary-color);
+    }
+
     .link {
       text-decoration: underline;
+      color: var(--primary-color);
     }
   }
 }

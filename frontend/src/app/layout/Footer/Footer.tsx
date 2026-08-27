@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <p className={styles.text}>
-        built with 𖹭 by{" "}
+        built with <span className={styles.icon}>𖹭</span> by{" "}
         <a
           className={styles.link}
           href="https://github.com/skorter"
