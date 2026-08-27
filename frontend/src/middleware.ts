@@ -6,11 +6,11 @@ export function middleware(request: NextRequest) {
 
   if (type && type !== type.toLowerCase()) {
     return NextResponse.redirect(
-      new URL(`/gallery/${type.toLowerCase()}`, request.url),
+      new URL(`/collections/${type.toLowerCase()}`, request.url),
     );
   }
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/gallery/:type*"],
+  matcher: ["/collections/:type*"],
 };

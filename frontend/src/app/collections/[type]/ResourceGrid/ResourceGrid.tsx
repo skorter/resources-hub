@@ -12,7 +12,7 @@ export default function ResourceGrid({ resources }: ResourceGridProps) {
       {resources.length > 0 ? (
         <ul className={styles.resourceList}>
           {resources.map((resource) => (
-            <li key={resource.id}>
+            <li key={resource.id} className={styles.resourceListItem}>
               <ResourceCard resource={resource} />
             </li>
           ))}

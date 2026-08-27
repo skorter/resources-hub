@@ -1,0 +1,28 @@
+.gallery {
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+
+  .galleryGrid {
+    position: relative;
+    padding: 2rem;
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 90%;
+      height: 1px;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      background-color: var(--gallery-card-background);
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+  }
+}

@@ -1,0 +1,65 @@
+@use "../abstracts//mixins" as *;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary-color: #b16bff;
+  --gallery-card-background: #1a1a1a;
+  --gallery-card-description-color: #dcdceb;
+  --stats-text-color: #b6b5b5;
+}
+
+html {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --primary-color: #ff6b5b;
+    --gallery-card-background: #f5f5f5;
+    --gallery-card-description-color: #171717;
+    --stats-text-color: #5a5958;
+  }
+
+  html {
+    color-scheme: light;
+  }
+}
+
+html.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary-color: #b16bff;
+  --gallery-card-background: #1a1a1a;
+  --gallery-card-description-color: #dcdceb;
+  --stats-text-color: #b6b5b5;
+
+  .sunIcon {
+    display: block;
+    @include icon-reset;
+  }
+  .moonIcon {
+    display: none;
+    @include icon-reset;
+  }
+}
+
+html.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-color: #ff6b5b;
+  --gallery-card-background: #f5f5f5;
+  --gallery-card-description-color: #171717;
+  --stats-text-color: #5a5958;
+
+  .sunIcon {
+    display: none;
+    @include icon-reset;
+  }
+  .moonIcon {
+    display: block;
+    @include icon-reset;
+  }
+}
