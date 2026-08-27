@@ -34,7 +34,7 @@ model Status {
 
 enum Type {
   Tools
-  Docs
+  References
   Libraries
   Inspiration
   Services
