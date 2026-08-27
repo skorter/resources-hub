@@ -7,15 +7,18 @@ export default function GalleryGrid() {
 
   return (
     <section className={styles.galleryGrid}>
-      {types.map(([type, { icon: Icon, label, description }]) => (
+      {types.map(([type, { icon: Icon, label, description, color }]) => (
         <Link
           key={type}
           className={styles.card}
-          href={`/gallery/${type.toLowerCase()}`}
+          href={`/collections/${type.toLowerCase()}/`}
+          style={{ "--icon-color": color } as React.CSSProperties}
         >
-          <Icon className={styles.cardIcon} />
-          <h2 className={styles.cardTitle}>{label}</h2>
-          <p>{description}</p>
+          <div className={styles.iconWrapper}>
+            <Icon className={styles.icon} />
+          </div>
+          <h2 className={styles.title}>{label}</h2>
+          <p className={styles.description}>{description}</p>
         </Link>
       ))}
     </section>
