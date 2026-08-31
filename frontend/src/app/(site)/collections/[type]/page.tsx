@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { typeMeta } from "../../../constants/typeMeta";
-import { getResources } from "../../../api/resources";
-import { getCategories } from "../../../api/categories";
-import ResourceHeader from "../[type]/ResourceHeader/ResourceHeader";
+import { typeMeta } from "../../../../constants/typeMeta";
+import { getResources } from "../../../../api/resources";
+import { getCategories } from "../../../../api/categories";
+import ResourceHeader from "./ResourceHeader/ResourceHeader";
 import GalleryGrid from "../../layout/GalleryGrid/GalleryGrid";
 import GalleryContent from "./GalleryContent";
 import styles from "./page.module.scss";

@@ -1,5 +1,5 @@
 import styles from "./page.module.scss";
-import { getResources } from "../../api/resources";
+import { getResources } from "../../../api/resources";
 
 export default async function Resources() {
   const resources = await getResources();

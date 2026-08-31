@@ -2,7 +2,7 @@
 import { useParams, usePathname } from "next/navigation";
 import styles from "./Header.module.scss";
 import { Layers, Sun, Moon, ArrowRight, ArrowLeft } from "lucide-react";
-import { typeMeta } from "../../../constants/typeMeta";
+import { typeMeta } from "../../../../constants/typeMeta";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 

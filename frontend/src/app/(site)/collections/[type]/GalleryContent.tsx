@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { type Resource, type Category } from "../../../lib/types";
-import ResourceGrid from "../[type]/ResourceGrid/ResourceGrid";
-import ResourceFinder from "../[type]/ResourceFinder/ResourceFinder";
+import { type Resource, type Category } from "../../../../lib/types";
+import ResourceGrid from "./ResourceGrid/ResourceGrid";
+import ResourceFinder from "./ResourceFinder/ResourceFinder";
 
 interface GalleryContentProps {
   resources: Resource[];

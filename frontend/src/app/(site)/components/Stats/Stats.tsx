@@ -1,7 +1,7 @@
 import styles from "./Stats.module.scss";
-import { getResources } from "../../../api/resources";
-import { typeMeta } from "../../../constants/typeMeta";
-import { getCategories } from "../../../api/categories";
+import { getResources } from "../../../../api/resources";
+import { typeMeta } from "../../../../constants/typeMeta";
+import { getCategories } from "../../../../api/categories";
 
 export default async function Stats() {
   const resources = await getResources();

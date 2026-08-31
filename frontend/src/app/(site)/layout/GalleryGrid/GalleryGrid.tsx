@@ -1,5 +1,5 @@
 import styles from "./GalleryGrid.module.scss";
-import { typeMeta } from "../../../constants/typeMeta";
+import { typeMeta } from "../../../../constants/typeMeta";
 import Link from "next/link";
 
 export default function GalleryGrid() {

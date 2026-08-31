@@ -1,4 +1,5 @@
 .resourceCard {
+  min-width: 0;
   background-color: color-mix(
     in srgb,
     var(--gallery-card-background) 95%,
@@ -12,6 +13,10 @@
       var(--gallery-card-background) 95%,
       #fff
     );
+  }
+
+  .title {
+    overflow-wrap: break-word;
   }
 
   .link {

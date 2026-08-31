@@ -1,5 +1,5 @@
 import styles from "./page.module.scss";
-import { getCategories } from "../../api/categories";
+import { getCategories } from "../../../api/categories";
 
 export default async function Categories() {
   const categories = await getCategories();

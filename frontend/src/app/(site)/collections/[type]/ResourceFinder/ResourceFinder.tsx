@@ -1,7 +1,7 @@
 import styles from "./ResourceFinder.module.scss";
-import { type Resource, type Category } from "../../../../lib/types";
+import { type Resource, type Category } from "../../../../../lib/types";
 import { Search } from "lucide-react";
-import { categoryMeta } from "../../../../constants/categoryMeta";
+import { categoryMeta } from "../../../../../constants/categoryMeta";
 
 interface ResourceFinderProps {
   resources: Resource[];

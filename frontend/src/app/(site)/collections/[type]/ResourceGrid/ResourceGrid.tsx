@@ -1,5 +1,5 @@
 import styles from "./ResourceGrid.module.scss";
-import { type Resource } from "../../../../lib/types";
+import { type Resource } from "../../../../../lib/types";
 import ResourceCard from "./ResourceCard/ResourceCard";
 
 interface ResourceGridProps {

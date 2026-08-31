@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./ResourceCard.module.scss";
-import type { Resource } from "../../../../../lib/types";
-import { categoryMeta } from "../../../../../constants/categoryMeta";
+import type { Resource } from "../../../../../../lib/types";
+import { categoryMeta } from "../../../../../../constants/categoryMeta";
 
 interface ResourceCardProps {
   resource: Resource;
