@@ -10,6 +10,7 @@
     "typecheck": "npx tsc",
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",
+    "seed": "npx prisma db seed",
     "studio": "npx prisma studio",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
