@@ -27,3 +27,8 @@ export type Status = {
   id: number;
   name: string;
 };
+
+export type Admin = {
+  username: string;
+  password: string;
+};

@@ -1,0 +1,93 @@
+.login {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .container {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem 2.5rem;
+    border-radius: 1rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+
+      .title {
+        font-size: 1.75rem;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #888;
+      }
+    }
+
+    .form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+
+      .inputGroup {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0.5rem;
+
+        .label {
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .input {
+          width: 100%;
+          padding: 0.65rem 0.75rem;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          background-color: rgba(255, 255, 255, 0.03);
+          color: var(--foreground);
+          border-radius: 0.5rem;
+
+          &:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.35);
+          }
+        }
+      }
+
+      .button {
+        width: 100%;
+        padding: 0.65rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        background-color: var(--foreground);
+        color: var(--background);
+      }
+    }
+
+    .warning {
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+    }
+  }
+}
