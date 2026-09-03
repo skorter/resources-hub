@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         pathname: "/favicon-32x32.png",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "delphi.tools",
+        pathname: "/delphi-lowlod.png",
+        port: "",
+      },
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

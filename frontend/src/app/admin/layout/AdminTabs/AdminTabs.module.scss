@@ -1,0 +1,25 @@
+.navigation {
+  display: flex;
+  flex-direction: column;
+
+  .tabList {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    border-bottom: 1px solid var(--foreground);
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: var(--foreground);
+      color: var(--background);
+      cursor: pointer;
+    }
+
+    .active {
+      font-weight: bold;
+      color: var(--background);
+      background-color: color-mix(in srgb, var(--foreground) 45%, beige);
+    }
+  }
+}

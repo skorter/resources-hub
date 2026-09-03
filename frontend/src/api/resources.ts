@@ -98,7 +98,7 @@ const updateResource = async (
     type?: Type;
     url?: string;
     categories?: number[];
-    statusId?: number;
+    statusId?: number | null;
   },
 ): Promise<Resource | { error: string }> => {
   try {

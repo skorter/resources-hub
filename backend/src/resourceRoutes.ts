@@ -128,8 +128,19 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     type?: Type;
     url?: string;
     categories?: number[];
-    statusId?: number;
+    statusId?: number | null;
   } = req.body;
+
+  let statusUpdate:
+    | { connect: { id: number } }
+    | { disconnect: true }
+    | undefined;
+
+  if (statusId === null) {
+    statusUpdate = { disconnect: true };
+  } else if (statusId !== undefined) {
+    statusUpdate = { connect: { id: statusId } };
+  }
 
   const data: {
     title?: string;
@@ -138,7 +149,7 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     type?: Type;
     url?: string;
     categories?: { set: { id: number }[] };
-    status?: { connect: { id: number } };
+    status?: { connect: { id: number } } | { disconnect: true };
   } = {
     ...(title !== undefined && { title }),
     ...(description !== undefined && { description }),
@@ -148,8 +159,8 @@ router.patch("/:id", authMiddleware, async (req: Request, res: Response) => {
     ...(categories !== undefined && {
       categories: { set: categories.map((id) => ({ id })) },
     }),
-    ...(statusId !== undefined && {
-      status: { connect: { id: statusId } },
+    ...(statusUpdate !== undefined && {
+      status: statusUpdate,
     }),
   };
 
