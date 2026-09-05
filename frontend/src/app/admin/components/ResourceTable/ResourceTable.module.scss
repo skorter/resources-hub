@@ -86,6 +86,12 @@
       width: 7%;
     } // Actions
 
+    td:nth-child(8),
+    td:nth-child(9) {
+      white-space: normal;
+      overflow: visible;
+    }
+
     .tableHeaderRow {
       background-color: #ccc;
       color: #000;
@@ -100,10 +106,22 @@
 
     .tableCell {
       padding: 0.5rem;
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #000;
-      word-wrap: break-word;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:has(input),
+      &:has(select) {
+        white-space: normal;
+        overflow: visible;
+      }
+
+      .categoryCheckboxes {
+        display: flex;
+        flex-direction: column;
+      }
     }
 
     .actionsRow {

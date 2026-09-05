@@ -1,10 +1,13 @@
 import styles from "./page.module.scss";
 import { getCategories } from "../../../api/categories";
+import { getResources } from "../../../api/resources";
+import ResourceGrid from "../collections/[type]/ResourceGrid/ResourceGrid";
 
 export default async function Categories() {
   const categories = await getCategories();
+  const resources = await getResources();
 
-  if (!categories) {
+  if (!categories || !resources) {
     return <p>Loading...</p>;
   }
 
@@ -12,11 +15,38 @@ export default async function Categories() {
     return <p>Error: {categories.error}</p>;
   }
 
+  if ("error" in resources) {
+    return <p>Error: {resources.error}</p>;
+  }
+
+  const uncategorizedResources = resources.filter(
+    (resource) => resource.categories.length === 0,
+  );
+
   return (
     <section className={styles.categories}>
-      {categories.map((category) => (
-        <div key={category.id}>{category.name}</div>
-      ))}
+      {categories.map((category) => {
+        const categoryResources = resources.filter((resource) =>
+          resource.categories.some((c) => c.id === category.id),
+        );
+
+        if (categoryResources.length === 0) {
+          return null;
+        }
+
+        return (
+          <div key={category.id} className={styles.categorySection}>
+            <h2>{category.name}</h2>
+            <ResourceGrid resources={categoryResources} />
+          </div>
+        );
+      })}
+      {uncategorizedResources.length > 0 && (
+        <div className={styles.categorySection}>
+          <h2>Other</h2>
+          <ResourceGrid resources={uncategorizedResources} />
+        </div>
+      )}
     </section>
   );
 }

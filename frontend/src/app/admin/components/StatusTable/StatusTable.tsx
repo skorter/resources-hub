@@ -66,7 +66,13 @@ export default function StatusTable({ resources, statuses }: StatusTableProps) {
   return (
     <section className={styles.statusTable}>
       <div className={styles.header}>
-        <h1>Status Table</h1>
+        <div>
+          <h1>Status Table</h1>
+          <p className={styles.resourceCount}>
+            <span className={styles.count}>{statuses.length} </span>statuses
+          </p>
+        </div>
+
         <button
           className={styles.addButton}
           onClick={() => setNewStatus({ name: "" })}

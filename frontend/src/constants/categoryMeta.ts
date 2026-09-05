@@ -13,4 +13,8 @@ export const categoryMeta: Record<string, { color: string }> = {
   JavaScript: { color: "#c4a23e" },
   APIs: { color: "#46748a" },
   Mobile: { color: "#6d7891" },
+  Hosting: { color: "#7d6a9c" },
+  Backend: { color: "#9c5a7d" },
+  Git: { color: "#a85c3e" },
+  Diagrams: { color: "#4e8f9c" },
 };

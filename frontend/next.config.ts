@@ -45,6 +45,12 @@ const nextConfig: NextConfig = {
         pathname: "/delphi-lowlod.png",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "*.gallery.vsassets.io",
+        pathname: "/**",
+        port: "",
+      },
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

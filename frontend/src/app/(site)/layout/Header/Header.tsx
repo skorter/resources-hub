@@ -35,6 +35,12 @@ export default function Header() {
           {galleryLabel && (
             <span className={styles.label}>/ {galleryLabel}</span>
           )}
+          {isOnResourcesPage && (
+            <span className={styles.label}>/ All Resources</span>
+          )}
+          {isOnCategoriesPage && (
+            <span className={styles.label}>/ By Category</span>
+          )}
         </p>
       </div>
       <ul className={styles.nav}>
@@ -44,7 +50,7 @@ export default function Header() {
               href="/"
               className={`${styles.link} ${styles["back-to-all-galleries"]}`}
             >
-              <ArrowLeft className={styles.icon} /> back to all collections
+              <ArrowLeft className={styles.icon} /> back
             </Link>
           </li>
         ) : (

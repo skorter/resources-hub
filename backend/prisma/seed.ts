@@ -1,82 +1,147 @@
 import prisma from "../src/prisma.ts";
 
-const socials = [
+function getExtentionIcon(url: string): string {
+  const itemName = new URL(url).searchParams.get("itemName")!;
+  const [publisher, ...rest] = itemName?.split(".");
+  const extensionName = rest.join(".");
+  return `https://${publisher}.gallery.vsassets.io/_apis/public/gallery/publisher/${publisher}/extension/${extensionName}/latest/assetbyname/Microsoft.VisualStudio.Services.Icons.Default`;
+}
+
+const extensions = [
   {
-    title: "@careersbychris",
+    title: "Auto Close Tag",
+    description: "Automatically closes HTML and XML tags as you type.",
+    url: "https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-close-tag",
+  },
+  {
+    title: "Auto Rename Tag",
     description:
-      "Career coaching, resume tips, and job-search advice from Christian Lovell.",
-    url: "https://www.instagram.com/careersbychris/",
+      "Renames the matching closing tag when you edit an opening tag.",
+    url: "https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag",
   },
   {
-    title: "@designmotionhq",
+    title: "Dobri Next",
+    description: "Collection of dark color themes and icon packs for VS Code.",
+    url: "https://marketplace.visualstudio.com/items?itemName=sldobri.bunker",
+  },
+  {
+    title: "Charkoal",
+    description: "Diagrams your codebase as connected visual notes.",
+    url: "https://marketplace.visualstudio.com/items?itemName=Charkoal.charkoal",
+  },
+  {
+    title: "Code Background",
+    description: "Sets a custom background image inside the VS Code editor.",
+    url: "https://marketplace.visualstudio.com/items?itemName=Katsute.code-background",
+  },
+  {
+    title: "CSS Peek",
     description:
-      "UI/UX pattern breakdowns covering design systems, states, and motion.",
-    url: "https://www.instagram.com/designmotionhq/",
+      "Jump to CSS class and ID definitions directly from your HTML.",
+    url: "https://marketplace.visualstudio.com/items?itemName=pranaygp.vscode-css-peek",
   },
   {
-    title: "@frontendjoe",
+    title: "Draw.io Integration",
+    description: "Edit and preview draw.io diagrams directly inside VS Code.",
+    url: "https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio",
+  },
+  {
+    title: "Error Lens",
     description:
-      "Frontend tutorials and code snippets in HTML, CSS, JavaScript, and React.",
-    url: "https://www.instagram.com/frontendjoe/",
+      "Highlights errors and warnings inline, right next to the code.",
+    url: "https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens",
   },
   {
-    title: "@zanderwhitehurst",
+    title: "ESLint",
     description:
-      "UX/UI tutorials, Figma tips, and AI design tools from the founder of Memorisely.",
-    url: "https://www.instagram.com/zanderwhitehurst/",
+      "Integrates ESLint into VS Code for real-time JavaScript linting.",
+    url: "https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint",
   },
   {
-    title: "@junaid_jamel",
+    title: "Filetree Pro",
     description:
-      "Coding tutorials and app build-alongs from a software engineer and co-founder.",
-    url: "https://www.instagram.com/junaid_jamel/",
+      "Generates a project's file and folder structure as a shareable tree.",
+    url: "https://marketplace.visualstudio.com/items?itemName=0xTanzim.filetree-pro",
   },
   {
-    title: "@setupsai",
-    description: "Daily tech and AI tips from creator Tony Chen.",
-    url: "https://www.instagram.com/setupsai/",
+    title: "Five Server",
+    description: "Live-reloading local dev server, an upgrade to Live Server.",
+    url: "https://marketplace.visualstudio.com/items?itemName=yandeu.five-server",
   },
   {
-    title: "@greatfrontend",
+    title: "Git Graph",
     description:
-      "Front-end interview preparation trusted by engineers worldwide.",
-    url: "https://www.instagram.com/greatfrontend/",
+      "Visualizes your Git commit history and branches as an interactive graph.",
+    url: "https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph",
   },
   {
-    title: "@startuxdesign",
+    title: "GitLens",
     description:
-      "Quick UX/UI tips and real-world lessons for design beginners.",
-    url: "https://www.instagram.com/startuxdesign/",
+      "Supercharges Git within VS Code with blame, history, and comparisons.",
+    url: "https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens",
   },
   {
-    title: "@the_codingsloth",
-    description: "Casual, practical coding and software videos.",
-    url: "https://www.instagram.com/the_codingsloth/",
-  },
-  {
-    title: "@thedesignely",
-    description: "UI animations, game UI, and creative interaction design.",
-    url: "https://www.instagram.com/thedesignely/",
-  },
-  {
-    title: "@zachex",
-    description: "Brand and UX design tutorials from the founder of Hexart.",
-    url: "https://www.instagram.com/zachex/",
-  },
-  {
-    title: "@meghanakumthekar_",
+    title: "Indent Rainbow",
     description:
-      "Design student sharing UI experiments and everyday designer life.",
-    url: "https://www.instagram.com/meghanakumthekar_/",
+      "Adds rainbow colors to indentation levels for better code readability.Colorizes indentation levels to make nested code easier to read.",
+    url: "https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow",
+  },
+  {
+    title: "JSON Crack",
+    description: "Visualizes JSON files as an interactive node graph.",
+    url: "https://marketplace.visualstudio.com/items?itemName=AykutSarac.jsoncrack-vscode",
+  },
+  {
+    title: "Live Share",
+    description:
+      "Real-time collaborative editing and debugging with teammates.",
+    url: "https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare",
+  },
+  {
+    title: "Path Intellisense",
+    description: "Autocompletes filenames and paths as you type.",
+    url: "https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense",
+  },
+  {
+    title: "Prettier",
+    description:
+      "Opinionated code formatter that keeps style consistent automatically.",
+    url: "https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode",
+  },
+  {
+    title: "Quokka.js",
+    description: "Live scratchpad showing JS/TS results inline as you type.",
+    url: "https://marketplace.visualstudio.com/items?itemName=WallabyJs.quokka-vscode",
+  },
+  {
+    title: "Rainbow CSV",
+    description:
+      "Highlights CSV and TSV columns in different colors for readability.",
+    url: "https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv",
+  },
+  {
+    title: "Reload",
+    description: "Reloads the VS Code window quickly without restarting.",
+    url: "https://marketplace.visualstudio.com/items?itemName=natqe.reload",
+  },
+  {
+    title: "Todo Highlight",
+    description: "Highlights TODO, FIXME, and other custom comment tags.",
+    url: "https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight",
+  },
+  {
+    title: "VSC Icons",
+    description: "Adds file and folder icons by file type to the explorer.",
+    url: "https://marketplace.visualstudio.com/items?itemName=yusifaliyevpro.vscicons",
   },
 ];
 
-for (const social of socials) {
+for (const extension of extensions) {
   await prisma.resource.create({
     data: {
-      ...social,
-      type: "Social",
-      logo: "https://geticon.dev/?url=instagram.com",
+      ...extension,
+      type: "Extensions",
+      logo: getExtentionIcon(extension.url),
     },
   });
 }

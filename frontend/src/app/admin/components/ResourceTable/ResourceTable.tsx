@@ -102,7 +102,7 @@ export default function ResourceTable({
         <div>
           <h1>Resource Table</h1>
           <p className={styles.resourceCount}>
-            <span className={styles.count}>{resources.length} resources</span>
+            <span className={styles.count}>{resources.length} </span>resources
           </p>
         </div>
 
@@ -245,7 +245,7 @@ export default function ResourceTable({
                 </select>
               </td>
               <td className={styles.tableCell}>
-                <div>
+                <div className={styles.categoryCheckboxes}>
                   {categories.map((category) => {
                     const isChecked = newResource.categories.some(
                       (c) => c.id === category.id,
@@ -376,7 +376,7 @@ export default function ResourceTable({
                 </td>
                 <td className={styles.tableCell}>
                   {editingResource?.id === resource.id ? (
-                    <div>
+                    <div className={styles.categoryCheckboxes}>
                       {categories.map((category) => {
                         const isChecked = editingResource.categories.some(
                           (c) => c.id === category.id,

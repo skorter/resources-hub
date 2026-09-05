@@ -1,5 +1,6 @@
 import styles from "./page.module.scss";
 import { getResources } from "../../../api/resources";
+import ResourceGrid from "../collections/[type]/ResourceGrid/ResourceGrid";
 
 export default async function Resources() {
   const resources = await getResources();
@@ -14,9 +15,7 @@ export default async function Resources() {
 
   return (
     <section className={styles.resources}>
-      {resources.map((resource) => (
-        <div key={resource.id}>{resource.title}</div>
-      ))}
+      <ResourceGrid resources={resources} />
     </section>
   );
 }

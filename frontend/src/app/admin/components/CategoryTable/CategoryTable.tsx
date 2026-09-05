@@ -73,7 +73,13 @@ export default function CategoryTable({
   return (
     <section className={styles.categoryTable}>
       <div className={styles.header}>
-        <h1>Category Table</h1>
+        <div>
+          <h1>Category Table</h1>
+          <p className={styles.resourceCount}>
+            <span className={styles.count}>{categories.length} </span>categories
+          </p>
+        </div>
+
         <button
           className={styles.addButton}
           onClick={() => setNewCategory({ name: "" })}
