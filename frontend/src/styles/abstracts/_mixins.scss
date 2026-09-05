@@ -1,5 +1,85 @@
-@mixin icon-reset {
-  width: 1.15rem;
-  height: 1.15rem;
-  stroke-width: 2;
+@use "variables" as *;
+
+@mixin icon($size: $icon-sm, $stroke: 2) {
+  width: $size;
+  height: $size;
+  stroke-width: $stroke;
+  flex-shrink: 0;
+}
+
+@mixin flex($direction: row, $align: center, $justify: center, $gap: 0) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+  @if $gap != 0 {
+    gap: $gap;
+  }
+}
+
+@mixin admin-table-header {
+  @include flex(row, center, space-between);
+  padding: $space-lg;
+}
+
+@mixin admin-table-base {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+@mixin admin-table-header-row {
+  background-color: var(--table-header-background);
+  color: var(--table-header-text);
+}
+
+@mixin admin-table-header-cell {
+  padding: $space-sm;
+  font-weight: bold;
+  border-top: 1px solid var(--table-border-strong);
+  border-bottom: 1px solid var(--table-border-strong);
+}
+
+@mixin admin-table-cell {
+  padding: $space-sm;
+  border-top: 1px solid var(--table-border-soft);
+  border-bottom: 1px solid var(--table-border-soft);
+}
+
+@mixin admin-add-button {
+  padding: $space-sm $space-lg;
+  background-color: var(--foreground);
+  color: var(--background);
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@mixin admin-actions-button($rounded: left) {
+  @include flex(row, center, flex-start, $space-xs);
+  padding: $space-xs $space-sm;
+  background-color: var(--foreground);
+  color: var(--background);
+  border: none;
+  cursor: pointer;
+
+  @if $rounded == left {
+    border-radius: $radius-sm 0 0 $radius-sm;
+  } @else {
+    border-radius: 0 $radius-sm $radius-sm 0;
+    border-left: 1px solid var(--background);
+  }
+}
+
+@mixin tint-bg($color, $percent: 15%, $mix: transparent) {
+  background-color: color-mix(in srgb, $color $percent, $mix);
+}
+
+@mixin tint-border($color, $percent: 20%, $mix: transparent) {
+  border: 1px solid color-mix(in srgb, $color $percent, $mix);
+}
+
+@mixin glow($color, $blur: 10px, $spread: 1px) {
+  box-shadow: 0 0 $blur $spread $color;
 }

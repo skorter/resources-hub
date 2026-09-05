@@ -1,62 +1,50 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
 .resourceTable {
   position: relative;
 
   .viewModal {
     position: fixed;
     inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.75);
+    @include flex(row, center, center);
+    background-color: var(--overlay);
     z-index: 1000;
 
     .viewModalContent {
       position: relative;
       max-width: 350px;
       background-color: var(--background);
-      padding: 1.75rem;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: $space-xl;
+      border: 1px solid var(--table-border-soft);
+      box-shadow: var(--shadow);
 
       .closeButton {
         position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
+        top: $space-sm;
+        right: $space-sm;
         background: none;
         border: none;
         cursor: pointer;
         color: var(--foreground);
 
         .icon {
-          width: 1rem;
-          height: 1rem;
-          stroke-width: 3;
+          @include icon($icon-sm, 3);
         }
       }
     }
   }
 
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
+    @include admin-table-header;
 
     .addButton {
-      padding: 0.5rem 1rem;
-      background-color: var(--foreground);
-      color: var(--background);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
+      @include admin-add-button;
     }
   }
 
   .table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
+    @include admin-table-base;
 
     th:nth-child(1) {
       width: 4%;
@@ -93,21 +81,15 @@
     }
 
     .tableHeaderRow {
-      background-color: #ccc;
-      color: #000;
+      @include admin-table-header-row;
     }
 
     .tableHeaderCell {
-      padding: 0.5rem;
-      font-weight: bold;
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #000;
+      @include admin-table-header-cell;
     }
 
     .tableCell {
-      padding: 0.5rem;
-      border-top: 1px solid #ddd;
-      border-bottom: 1px solid #ddd;
+      @include admin-table-cell;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -119,26 +101,16 @@
       }
 
       .categoryCheckboxes {
-        display: flex;
-        flex-direction: column;
+        @include flex(column, stretch, flex-start);
       }
     }
 
     .actionsRow {
-      display: flex;
-      align-items: stretch;
-      gap: 0.25rem;
+      @include flex(row, stretch, center, $space-xs);
       width: 100%;
 
       .viewButton {
-        display: flex;
-        align-items: center;
-        padding: 0.25rem 0.5rem;
-        background-color: var(--foreground);
-        color: var(--background);
-        border: none;
-        border-radius: 0.25rem 0 0 0.25rem;
-        cursor: pointer;
+        @include admin-actions-button;
       }
 
       .actionsWrapper {
@@ -147,21 +119,10 @@
         display: flex;
 
         .moreActionsButton {
-          display: flex;
-          align-items: center;
-          padding: 0.25rem 0.5rem;
-          background-color: var(--foreground);
-          color: var(--background);
-          border: none;
-          border-left: 1px solid var(--background);
-          border-radius: 0 0.25rem 0.25rem 0;
-          cursor: pointer;
+          @include admin-actions-button(right);
 
           .icon {
-            width: 1rem;
-            height: 1rem;
-            stroke-width: 2.5;
-            flex-shrink: 0;
+            @include icon($icon-sm, 2.5);
           }
         }
 
@@ -171,26 +132,25 @@
           right: 0;
           background-color: var(--background);
           border: 1px solid var(--foreground);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          box-shadow: var(--shadow);
           z-index: 100;
 
           .editButton,
           .deleteButton {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            @include flex(row, center, flex-start, $space-sm);
             width: 100%;
-            padding: 0.5rem 1rem;
+            padding: $space-sm $space-lg;
             background: none;
-            border: 1px solid #ccc;
+            border: 1px solid var(--table-border-soft);
             cursor: pointer;
 
             .icon {
-              width: 1rem;
-              height: 1rem;
-              stroke-width: 3;
-              flex-shrink: 0;
+              @include icon($icon-sm, 3);
             }
+          }
+
+          .deleteButton .icon {
+            stroke: var(--danger);
           }
         }
       }

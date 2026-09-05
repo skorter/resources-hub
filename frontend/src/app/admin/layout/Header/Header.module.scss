@@ -1,39 +1,31 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
 .header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
+  @include flex(row, center, space-between);
+  padding: $space-lg $space-2xl;
 
   .left {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
+    @include flex(row, center, flex-start, $space-sm);
 
     .icon {
-      stroke-width: 3;
+      @include icon($icon-sm, 3);
     }
   }
 
   .logoutButton {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
+    @include flex(row, center, flex-start, $space-sm);
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    padding: $space-sm $space-lg;
+    border-radius: $radius-sm;
     background-color: var(--foreground);
     color: var(--background);
     font-weight: 600;
 
     .icon {
-      width: 1rem;
-      height: 1rem;
-      stroke-width: 3;
+      @include icon($icon-sm, 3);
     }
   }
 }

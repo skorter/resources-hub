@@ -1,21 +1,22 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
 .footer {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem 0;
+  @include flex(row, center, center);
+  padding: $space-sm 0;
 
   .text {
     font-size: 0.95rem;
 
     .icon {
       font-size: 1.15rem;
-      color: var(--primary-color);
+      color: var(--primary);
     }
 
     .link {
       text-decoration: underline;
-      color: var(--primary-color);
+      color: var(--primary);
     }
   }
 }

@@ -1,11 +1,13 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
 .gallery {
   overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
+  @include flex(column, stretch, flex-start);
 
   .galleryGrid {
     position: relative;
-    padding: 2rem;
+    padding: $space-2xl;
 
     &::after {
       content: "";
@@ -20,9 +22,7 @@
   }
 
   .content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding: 2rem;
+    @include flex(column, stretch, flex-start, $space-2xl);
+    padding: $space-2xl $space-4xl;
   }
 }

@@ -1,18 +1,13 @@
+@use "../../../../../../styles/abstracts/mixins" as *;
+@use "../../../../../../styles/abstracts/variables" as *;
+
 .resourceCard {
   min-width: 0;
-  background-color: color-mix(
-    in srgb,
-    var(--gallery-card-background) 95%,
-    #fff
-  );
+  @include tint-bg(var(--gallery-card-background), 95%, #fff);
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: color-mix(
-      in srgb,
-      var(--gallery-card-background) 95%,
-      #fff
-    );
+    @include tint-bg(var(--gallery-card-background), 90%, #fff);
   }
 
   .title {
@@ -23,10 +18,8 @@
     position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem;
+    @include flex(column, stretch, flex-start, $space-md);
+    padding: $space-xl;
     overflow: hidden;
 
     .status {
@@ -35,7 +28,7 @@
       right: 13%;
       transform-origin: top right;
       width: 200px;
-      padding: 0.5rem 0;
+      padding: $space-sm 0;
       text-align: center;
       background-color: color-mix(in srgb, gold 65%, orange);
       color: black;
@@ -49,9 +42,7 @@
     .logo {
       width: fit-content;
       height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      @include flex(row, center, center);
 
       img {
         max-width: 100%;
@@ -67,14 +58,10 @@
       margin-top: auto;
 
       .category {
-        padding: 0.25rem 0.5rem;
-        border-radius: 1rem;
+        padding: $space-xs $space-sm;
+        border-radius: $radius-lg;
         color: var(--category-color);
-        background-color: color-mix(
-          in srgb,
-          var(--category-color) 10%,
-          transparent
-        );
+        @include tint-bg(var(--category-color), 10%);
       }
     }
   }

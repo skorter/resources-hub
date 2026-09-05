@@ -1,0 +1,56 @@
+@use "../../../styles/abstracts/mixins" as *;
+@use "../../../styles/abstracts/variables" as *;
+
+.categories {
+  @include flex(column, stretch, flex-start);
+  padding: $space-3xl $space-4xl;
+  --resource-grid-gap: #{$space-2xl};
+}
+
+.categoryList {
+  position: relative;
+  @include flex(column, stretch, flex-start, $space-lg);
+  padding-bottom: $space-2xl;
+
+  &:not(:first-child) {
+    padding-top: $space-2xl;
+  }
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 90%;
+    transform: translateX(-50%);
+    height: 1px;
+    background-color: var(--gallery-card-background);
+  }
+
+  > h2 {
+    position: relative;
+    padding-left: $space-lg;
+    font-size: 1.5rem;
+    font-weight: bold;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 1.5rem;
+      border-radius: $radius-sm;
+      background-color: var(--category-color, var(--primary));
+    }
+  }
+
+  &:last-child h2 {
+    color: var(--status-text);
+
+    &::before {
+      background-color: var(--status-text);
+    }
+  }
+}

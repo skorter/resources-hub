@@ -2,6 +2,7 @@ import styles from "./page.module.scss";
 import { getCategories } from "../../../api/categories";
 import { getResources } from "../../../api/resources";
 import ResourceGrid from "../collections/[type]/ResourceGrid/ResourceGrid";
+import { categoryMeta } from "../../../constants/categoryMeta";
 
 export default async function Categories() {
   const categories = await getCategories();
@@ -35,14 +36,22 @@ export default async function Categories() {
         }
 
         return (
-          <div key={category.id} className={styles.categorySection}>
+          <div
+            key={category.id}
+            className={styles.categoryList}
+            style={
+              {
+                "--category-color": categoryMeta[category.name]?.color,
+              } as React.CSSProperties
+            }
+          >
             <h2>{category.name}</h2>
             <ResourceGrid resources={categoryResources} />
           </div>
         );
       })}
       {uncategorizedResources.length > 0 && (
-        <div className={styles.categorySection}>
+        <div className={styles.categoryList}>
           <h2>Other</h2>
           <ResourceGrid resources={uncategorizedResources} />
         </div>
