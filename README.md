@@ -26,6 +26,22 @@ A curated library for organizing useful tools and documentation discovered while
 
 ---
 
+## Preview
+
+### Public site
+
+Browsing, filtering by type and category, and the resource cards in action.
+
+![Website preview](docs/readme-preview/site-preview.gif)
+
+### Admin panel
+
+Logging in and managing resources through the CRUD tables.
+
+![Admin preview](docs/readme-preview/admin-preview.gif)
+
+---
+
 ## Vision & Goals
 
 Resource Hub was built with three goals in mind: to practice a realistic full-stack workflow; to be portfolio-worthy, backed by real architecture decisions; and to end up as a tool that's actually useful day to day, for saving and revisiting the tools and services worth remembering.
@@ -51,11 +67,12 @@ The tech stack was chosen deliberately with these goals in mind — a native Pos
 - Filter by category within a type — narrow a type's gallery further by category, since a resource can belong to several at once.
 - Browse by category — a separate category-first view, useful for cutting across types.
 - View resource details — title, description, pricing status (e.g. free, paid, freemium), and a direct link out to the source.
+- Suggest a resource — a form with a live preview of how the suggestion would render as a resource card.
 
 ### Admin
 
 - Add, edit, and delete resources — the entire content lifecycle happens through a private panel, no direct database editing needed day to day.
-Organize with categories — assign as many as make sense to a resource, so the same item can surface under multiple useful filters.
+- Organize with categories — assign as many as make sense to a resource, so the same item can surface under multiple useful filters.
 - Session-based login — a single hashed admin password grants access; sessions are checked on every write request via middleware, and expire rather than persisting indefinitely.
 
 ---
@@ -84,20 +101,20 @@ Organize with categories — assign as many as make sense to a resource, so the 
 
 #### Dependencies
 
-| Package        | Purpose                         |
-| -------------- | ------------------------------- |
-| `next`                     | React framework with App Router     |
-| `react` / `react-dom`         | UI library                             |
-| `next-themes`                    | Dark/light mode theming                  |
-| `lucide-react`                      | Icon set                                   |
-| `sass`                                   | Enables `.scss` syntax                          |
+| Package               | Purpose                         |
+| --------------------- | ------------------------------- |
+| `next`                | React framework with App Router |
+| `react` / `react-dom` | UI library                      |
+| `next-themes`         | Dark/light mode theming         |
+| `lucide-react`        | Icon set                        |
+| `sass`                | Enables `.scss` syntax          |
 
 #### Dev dependencies
 
-| Package      | Purpose       |
-| ------------ | ------------- |
-| `typescript` | Static typing |
-| `eslint`     | Linting       |
+| Package                                           | Purpose          |
+| ------------------------------------------------- | ---------------- |
+| `typescript`                                      | Static typing    |
+| `eslint`                                          | Linting          |
 | `@types/node`, `@types/react`, `@types/react-dom` | Type definitions |
 
 > `react`, `react-dom`, and `next` are pinned to exact versions, while other dependencies use `^` ranges and can update within their minor/patch range on install.
@@ -106,15 +123,16 @@ Organize with categories — assign as many as make sense to a resource, so the 
 
 #### Dependencies
 
-| Package           | Purpose                       |
-| ----------------- | ----------------------------- |
-| `express`         | REST API framework            |
-| `express-session` | Server-side session handling  |
-| `bcryptjs`        | Password hashing              |
-| `cors`            | Cross-origin request handling |
-| `@prisma/client`                     | Prisma generated client                    |
-| `@prisma/adapter-pg`                    | Prisma's native `pg` driver adapter          |
-| `pg`                                       | PostgreSQL driver                              |
+| Package              | Purpose                             |
+| -------------------- | ----------------------------------- |
+| `express`            | REST API framework                  |
+| `express-session`    | Server-side session handling        |
+| `bcryptjs`           | Password hashing                    |
+| `resend`             | Sends resource-suggestion emails    |
+| `cors`               | Cross-origin request handling       |
+| `@prisma/client`     | Prisma generated client             |
+| `@prisma/adapter-pg` | Prisma's native `pg` driver adapter |
+| `pg`                 | PostgreSQL driver                   |
 
 #### Dev dependencies
 
@@ -140,68 +158,189 @@ Resource Hub consists of a Next.js frontend (using the App Router) and a hand-bu
 ### Page structure
 
 The public site lives under a `(site)` route group — a URL-invisible group used purely to attach a shared `Header`/`Footer` layout and site-wide metadata to the homepage, `/resources`, `/categories`, and the per-type `/collections/[type]` galleries. `admin/` is a plain folder rather than a route group, since its URL segment (`/admin`) is intentional — it needs its own layout that overrides metadata with `noindex`/`nofollow` and its own login gate. `src/proxy.ts` (Next 16's middleware convention) sits in front of both: it normalizes casing on `/collections/:type` and redirects unauthenticated visitors off `/admin` and authenticated visitors off `/admin/login`.
- 
+
 ### Component organisation
- 
+
 Public-facing layout pieces (`Header`, `Footer`, `GalleryGrid`) and page-level components (`Hero`, `Stats`) live under `(site)/layout/` and `(site)/components/`. The admin side follows one repeated pattern across all three of its data types: `ResourceTable`, `StatusTable`, and `CategoryTable` each fetch their full list server-side, track a single "active" row (editing, viewing, or a new draft) in client state, and conditionally render an input or plain text per cell. `AdminTabs` switches between the three client-side, without separate routes.
- 
+
 ### Data layer
- 
-Content is defined in `backend/prisma/schema.prisma` and served through typed fetch wrappers in `frontend/src/api/` (`resources.ts`, `categories.ts`, `statuses.ts`, `auth.ts`):
- 
+
+Content is defined in `backend/prisma/schema.prisma` and served through typed fetch wrappers in `frontend/src/api/` (`resources.ts`, `categories.ts`, `statuses.ts`, `auth.ts`, `suggest.ts`):
+
 - **Resource** — `title`, `description`, `url`, `logo?`, `createdAt`, and a `type`
   - `type` — enum: `Tools | References | Libraries | Inspiration | Services | Extensions | Social`
   - `status?` — optional one-to-many relation (e.g. "Paid", "Freemium")
   - `categories` — **many-to-many** with Category; a resource can belong to multiple categories and appears under each on the public `/categories` page
 - **Category** — `id`, `name`
 - **Status** — `id`, `name`
- 
+
+There is no separate tagging system — categories serve as the primary filtering/organizing mechanism, and a resource can carry several.
+
+### Type sync
+
+The frontend's `Type` enum is generated from the backend's Prisma schema. `backend/scripts/generateFrontendTypes.ts` reads Prisma's generated enum and writes `frontend/src/lib/generatedType.ts`; `lib/types.ts` re-exports `Type` from that file. Run `npm run sync-types` after changing the `Type` enum in `schema.prisma` and migrating, alongside the existing `migrate`/`generate`/`seed` scripts.
+
 ### API
- 
-The Express backend (`backend/src/`) mounts one route file per resource type — `resourceRoutes.ts`, `categoryRoutes.ts`, `statusRoutes.ts` — plus `authRoutes.ts` for `/auth/login`, `/auth/logout`, and `/auth/session`. `authMiddleware.ts` checks `req.session.isAdmin` and is applied only to write routes (POST/PATCH/DELETE); all GET routes are public. `seed.ts` handles bulk-populating the database (`npm run seed`).
- 
+
+The Express backend (`backend/src/`) mounts one route file per resource type — `resourceRoutes.ts`, `categoryRoutes.ts`, `statusRoutes.ts` — plus `authRoutes.ts` for `/auth/login`, `/auth/logout`, and `/auth/session`, and `suggestRoutes.ts` for the public `/suggest` endpoint, which sends an email via Resend rather than writing to the database. `authMiddleware.ts` checks `req.session.isAdmin` and is applied only to write routes (POST/PATCH/DELETE); all GET routes and `/suggest` are public. `seed.ts` handles bulk-populating the database (`npm run seed`), kept private — see [Installation & Setup](#installation--setup).
+
 ### Theming and global state
- 
+
 Dark/light mode is handled by `next-themes`, mounted at the root layout.
 
 ---
 
 ## Access Model
 
-The app has two sides. **Public visitors** have a read-only experience, with no login required, just browsing and filtering. A single **private account**, authenticated via a hashed password and server-side sessions (`express-session`, cookie-based, not JWT), lets the project owner to manage content through a secure admin panel. There is no multi-user role system — only these two access tiers — and the admin interface is not publicly documented.
+The app has two sides. **Public visitors** have a read-only experience, with no login required, just browsing and filtering. A single **private account**, authenticated via a hashed password and server-side sessions (`express-session`, cookie-based, not JWT), lets the project owner manage content through a secure admin panel. There is no multi-user role system — only these two access tiers — and the admin interface is not publicly documented.
 
 ---
 
 ## Folder Architecture
 
----
+```
+├── 📁 backend
+│   ├── 📁 prisma
+│   │   ├── 📁 migrations                          → one folder per schema change
+│   │   │   └── ⚙️ migration_lock.toml
+│   │   ├── 📄 schema.prisma                       → source of truth: models, relations, and Type enum
+│   │   └── 📄 seed.ts                              → bulk-population script
+│   ├── 📁 scripts
+│   │   └── 📄 generateFrontendTypes.ts             → regenerates frontend's Type from Prisma's enum (npm run sync-types)
+│   ├── 📁 src
+│   │   ├── 📁 generated                              → Prisma's auto-generated client and enums
+│   │   ├── 📄 app.ts                                  → Express app, session config, CORS, route mounting
+│   │   ├── 📄 authMiddleware.ts                        → checks req.session.isAdmin, applied to write routes only
+│   │   ├── 📄 authRoutes.ts                             → /auth/login, /auth/logout, /auth/session
+│   │   ├── 📄 categoryRoutes.ts
+│   │   ├── 📄 prisma.ts                                   → shared Prisma client
+│   │   ├── 📄 resourceRoutes.ts                            → GET public; POST/PATCH/DELETE gated
+│   │   ├── 📄 statusRoutes.ts
+│   │   └── 📄 suggestRoutes.ts                                → public POST /suggest, sends email via Resend
+│   ├── ⚙️ nodemon.json
+│   ├── ⚙️ package-lock.json
+│   ├── ⚙️ package.json
+│   ├── 📄 prisma.config.ts                        → registers seed.ts as Prisma's seed command
+│   └── ⚙️ tsconfig.json
+├── 📁 docs
+│   ├── 📁 readme-preview                          → screenshots/GIFs used in the README's Preview section
+│   ├── 📝 auth-flow.md                             → Mermaid diagram of the login flow
+│   └── 📝 schema.md                                 → Mermaid diagram of the Prisma schema
+├── 📁 frontend
+│   ├── 📁 public                                  → static assets
+│   ├── 📁 src
+│   │   ├── 📁 api                                 → typed fetch wrappers
+│   │   │   ├── 📄 auth.ts
+│   │   │   ├── 📄 categories.ts
+│   │   │   ├── 📄 resources.ts
+│   │   │   ├── 📄 statuses.ts
+│   │   │   └── 📄 suggest.ts
+│   │   ├── 📁 app
+│   │   │   ├── 📁 (site)                          → public routes (route group)
+│   │   │   │   ├── 📁 categories                    → resources grouped by category, "Other" for uncategorized
+│   │   │   │   ├── 📁 collections
+│   │   │   │   │   └── 📁 [type]                        → per-type gallery
+│   │   │   │   │       ├── 📁 ResourceFinder            → search and multi-category filter
+│   │   │   │   │       ├── 📁 ResourceGrid
+│   │   │   │   │       │   ├── 📁 ResourceCard                → single resource card, reused across every listing page
+│   │   │   │   │       ├── 📁 ResourceHeader
+│   │   │   │   │       ├── 📄 GalleryContent.tsx              → client component holding search/filter state (page.tsx stays server-side)
+│   │   │   │   │       ├── 🎨 page.module.scss
+│   │   │   │   │       └── 📄 page.tsx
+│   │   │   │   ├── 📁 components                     → homepage pieces
+│   │   │   │   │   ├── 📁 Hero
+│   │   │   │   │   └── 📁 Stats
+│   │   │   │   ├── 📁 layout                          → shared public-side chrome
+│   │   │   │   │   ├── 📁 Footer
+│   │   │   │   │   ├── 📁 GalleryGrid
+│   │   │   │   │   └── 📁 Header
+│   │   │   │   ├── 📁 resources                        → all-resources index (ResourceGrid)
+│   │   │   │   ├── 📁 suggest                            → suggest-a-resource form with live ResourceCard preview
+│   │   │   │   ├── 📄 layout.tsx                          → Header/{children}/Footer
+│   │   │   │   ├── 🎨 page.module.scss
+│   │   │   │   └── 📄 page.tsx                              → homepage (Hero, Stats)
+│   │   │   ├── 📁 admin                             → plain folder (not a route group)
+│   │   │   │   ├── 📁 components
+│   │   │   │   │   ├── 📁 CategoryTable                → full CRUD table
+│   │   │   │   │   ├── 📁 ResourceTable                → full CRUD table
+│   │   │   │   │   └── 📁 StatusTable                    → full CRUD table
+│   │   │   │   ├── 📁 layout
+│   │   │   │   │   ├── 📁 AdminTabs                        → client-side tab switch, no separate routes
+│   │   │   │   │   └── 📁 Header
+│   │   │   │   ├── 📁 login                            → public login form (only unauthenticated page under /admin)
+│   │   │   │   ├── 📄 layout.tsx                          → overrides metadata: noindex/nofollow
+│   │   │   │   ├── 🎨 page.module.scss
+│   │   │   │   └── 📄 page.tsx                              → fetches resources/statuses/categories, renders AdminTabs
+│   │   │   ├── 📄 favicon.ico
+│   │   │   ├── 📄 layout.tsx                        → root: <html>/<body>/<Providers>, site-wide metadata
+│   │   │   ├── 🖼️ opengraph-image.png                 → file-convention OG image
+│   │   │   └── 📄 providers.tsx                        → next-themes Providers wrapper
+│   │   ├── 📁 constants
+│   │   │   ├── 📄 categoryMeta.ts                    → per-category display color
+│   │   │   └── 📄 typeMeta.ts                          → per-Type label/icon/description
+│   │   ├── 📁 lib
+│   │   │   ├── 📄 generatedType.ts                → auto-generated Type const/type
+│   │   │   └── 📄 types.ts                           → Resource/Category/Status/Admin/Suggestion; re-exports Type
+│   │   ├── 📁 styles
+│   │   │   ├── 📁 abstracts
+│   │   │   │   ├── 🎨 _mixins.scss                → flex, icon, admin-table, tint-bg/tint-border, glow, etc.
+│   │   │   │   └── 🎨 _variables.scss                → spacing, radius, icon-size scales
+│   │   │   ├── 📁 base
+│   │   │   │   ├── 🎨 _base.scss
+│   │   │   │   ├── 🎨 _reset.scss
+│   │   │   │   └── 🎨 _root.scss                        → theme-aware CSS custom properties, dark/light pairs
+│   │   │   └── 🎨 globals.scss
+│   │   └── 📄 proxy.ts                            → Next 16 middleware equivalent; normalizes /collections/:type casing, gates /admin
+│   ├── 📄 eslint.config.mjs
+│   ├── 📄 next.config.ts                          → remote image patterns (geticon.dev, VS Code Marketplace CDN, etc.)
+│   ├── ⚙️ package-lock.json
+│   ├── ⚙️ package.json
+│   └── ⚙️ tsconfig.json
+├── ⚙️ .gitignore
+├── 📄 LICENSE
+└── 📝 README.md
+```
 
+---
 
 ## Installation & Setup
 
-> To be finalized once hosting is set up. Local development, in the meantime:
- 
+### Live demo
+
+_(upcoming link)_ — will be added once hosting (Vercel + Render + Neon) is live.
+
+### Local development
+
+> For local reference only — this project isn't licensed for reuse (see [License](#license)).
+
+> The curated resource data (seed.ts) is kept private and isn't included in this repo, so a fresh clone starts with an empty database.
+
 **Backend**
+
 ```bash
 cd backend
 npm install
 npx prisma migrate dev
-npx prisma db seed
 npm run dev
 ```
- 
+
 **Frontend**
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
- 
-Requires a local PostgreSQL instance and a `.env` in `backend/` with your database URL and hardcoded admin credentials (bcrypt-hashed password + username).
+
+Requires a local PostgreSQL instance and a `.env` in `backend/` with your database URL and hardcoded admin credentials (bcrypt-hashed password and username).
 
 ---
 
 ## Status & Roadmap
+
+Sprint planning and the full roadmap are tracked on Jira.
+
+![Jira preview](docs/readme-preview/jira-preview.gif)
 
 ---
 
