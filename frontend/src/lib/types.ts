@@ -1,4 +1,4 @@
-// import type { Type } from "../../../backend/src/generated/prisma/enums";
+import type { Type } from "./generatedType";
 
 export type Resource = {
   id: number;
@@ -33,17 +33,7 @@ export type Admin = {
   password: string;
 };
 
-export const Type = {
-  Tools: "Tools",
-  References: "References",
-  Libraries: "Libraries",
-  Inspiration: "Inspiration",
-  Services: "Services",
-  Extensions: "Extensions",
-  Social: "Social",
-} as const;
-
-export type Type = (typeof Type)[keyof typeof Type];
+export type { Type } from "./generatedType";
 
 export type Suggestion = {
   name?: string;

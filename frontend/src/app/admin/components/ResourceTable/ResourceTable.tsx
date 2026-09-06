@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Type } from "../../../../lib/types";
+import { Type } from "../../../../lib/generatedType";
 import {
   createResource,
   updateResource,
