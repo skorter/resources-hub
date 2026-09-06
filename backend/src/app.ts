@@ -48,6 +48,9 @@ app.use("/statuses", statusRoutes);
 import authRoutes from "./authRoutes.ts";
 app.use("/auth", authRoutes);
 
+import suggestRoutes from "./suggestRoutes.ts";
+app.use("/suggest", suggestRoutes);
+
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT!}`);
 });

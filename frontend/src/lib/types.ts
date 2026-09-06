@@ -44,3 +44,10 @@ export const Type = {
 } as const;
 
 export type Type = (typeof Type)[keyof typeof Type];
+
+export type Suggestion = {
+  name?: string;
+  title: string;
+  url: string;
+  description: string;
+};

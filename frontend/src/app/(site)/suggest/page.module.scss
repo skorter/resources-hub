@@ -1,0 +1,109 @@
+@use "../../../styles/abstracts/mixins" as *;
+@use "../../../styles/abstracts/variables" as *;
+
+.suggest {
+  width: 90%;
+  margin: 0 auto;
+  padding: $space-3xl $space-4xl;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "header header"
+    "formContainer preview";
+  gap: $space-3xl;
+
+  .header {
+    grid-area: header;
+    @include flex(column, center, center, $space-md);
+    text-align: center;
+
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--foreground);
+    }
+
+    .description {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+  }
+
+  .formContainer,
+  .preview {
+    width: 100%;
+    @include flex(column, stretch, flex-start, $space-lg);
+
+    .sectionLabel {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05rem;
+    }
+  }
+
+  .formContainer {
+    .form {
+      @include flex(column, stretch, flex-start, $space-xl);
+
+      .inputGroup {
+        @include flex(column, stretch, flex-start, $space-md);
+
+        .label {
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .input {
+          width: 100%;
+          padding: $space-sm $space-md;
+          border: 1px solid var(--input-border);
+          background-color: var(--input-background);
+          color: var(--foreground);
+          border-radius: $radius-md;
+
+          &:focus {
+            outline: none;
+            border-color: var(--input-border-focus);
+          }
+        }
+      }
+
+      .textareaGroup .input {
+        min-height: 80px;
+        resize: none;
+        overflow-y: auto;
+      }
+
+      .submitButton {
+        width: 100%;
+        padding: $space-sm $space-lg;
+        border: none;
+        background-color: var(--foreground);
+        color: var(--background);
+        border-radius: $radius-md;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+
+        &:disabled {
+          opacity: 0.85;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .preview {
+    .resourceCard {
+      flex: 1;
+      width: 100%;
+      max-width: 300px;
+      align-self: center;
+      @include flex(column, stretch, center);
+      --gallery-card-background: var(--input-background);
+    }
+  }
+}

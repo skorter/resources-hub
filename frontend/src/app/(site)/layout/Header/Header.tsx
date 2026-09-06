@@ -22,9 +22,13 @@ export default function Header() {
   const isOnGalleryPage = pathname.startsWith("/collections");
   const isOnResourcesPage = pathname === "/resources";
   const isOnCategoriesPage = pathname === "/categories";
+  const isOnSuggestPage = pathname === "/suggest";
 
   const showBackToAllGalleriesLink =
-    isOnGalleryPage || isOnResourcesPage || isOnCategoriesPage;
+    isOnGalleryPage ||
+    isOnResourcesPage ||
+    isOnCategoriesPage ||
+    isOnSuggestPage;
 
   return (
     <header className={styles.header}>
@@ -76,7 +80,7 @@ export default function Header() {
             </li>
             <li>
               <Link
-                href="/suggest-resource"
+                href="/suggest"
                 className={`${styles.link} ${styles["suggest-resource"]}`}
               >
                 Suggest resource <ArrowRight className={styles.icon} />
