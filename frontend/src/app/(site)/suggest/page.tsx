@@ -14,7 +14,6 @@ function getHostname(url: string): string | undefined {
 }
 
 export default function Suggest() {
-  const [isValid, setIsValid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [hasSucceeded, setHasSucceeded] = useState(false);
   const [draft, setDraft] = useState<Suggestion>({
@@ -49,7 +48,6 @@ export default function Suggest() {
         <p className={styles.sectionLabel}>Form</p>
         <form
           className={styles.form}
-          onChange={(e) => setIsValid(e.currentTarget.checkValidity())}
           onSubmit={async (e) => {
             e.preventDefault();
             setSubmitting(true);
@@ -132,7 +130,7 @@ export default function Suggest() {
           <button
             className={styles.submitButton}
             type="submit"
-            disabled={!isValid || submitting || hasSucceeded}
+            disabled={submitting || hasSucceeded}
           >
             {submitting
               ? "Submitting..."

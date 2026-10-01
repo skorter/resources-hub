@@ -1,6 +1,8 @@
 # Resource Hub
 
-> This project is under active development — some sections below are still being written, and the stack described reflects current plans, which may change as the project progresses.
+> This project is live and under active development — responsiveness and further content are still in progress.
+
+**Live demo:** [resources-hub-lovat.vercel.app](https://resources-hub-lovat.vercel.app/)
 
 ---
 
@@ -90,6 +92,7 @@ The tech stack was chosen deliberately with these goals in mind — a native Pos
 | DB GUI          | Prisma Studio                       |
 | API testing     | Postman                             |
 | Auth            | bcryptjs + express-session          |
+| Email           | Resend                              |
 | Version Control | Git + GitHub                        |
 | Deployment      | Vercel + Render + Neon              |
 
@@ -147,7 +150,7 @@ The tech stack was chosen deliberately with these goals in mind — a native Pos
 | `@types/node`            | Node type definitions            |
 | `@types/cors`            | cors type definitions            |
 
-> Backend runs TypeScript natively (no build step in dev) via `nodemon`, and uses Express 5 with Prisma's `pg` adapter rather than Prisma's default driver.
+> The backend runs TypeScript natively with no build step (`node src/app.ts` in production, `nodemon` in development), and uses Express 5 with Prisma's `pg` adapter rather than Prisma's default driver.
 
 ---
 
@@ -157,7 +160,7 @@ Resource Hub consists of a Next.js frontend (using the App Router) and a hand-bu
 
 ### Page structure
 
-The public site lives under a `(site)` route group — a URL-invisible group used purely to attach a shared `Header`/`Footer` layout and site-wide metadata to the homepage, `/resources`, `/categories`, and the per-type `/collections/[type]` galleries. `admin/` is a plain folder rather than a route group, since its URL segment (`/admin`) is intentional — it needs its own layout that overrides metadata with `noindex`/`nofollow` and its own login gate. `src/proxy.ts` (Next 16's middleware convention) sits in front of both: it normalizes casing on `/collections/:type` and redirects unauthenticated visitors off `/admin` and authenticated visitors off `/admin/login`.
+The public site lives under a `(site)` route group — a URL-invisible group used purely to attach a shared `Header`/`Footer` layout and site-wide metadata to the homepage, `/resources`, `/categories`, `/suggest`, and the per-type `/collections/[type]` galleries. `admin/` is a plain folder rather than a route group, since its URL segment (`/admin`) is intentional — it needs its own layout that overrides metadata with `noindex`/`nofollow` and its own login gate. `src/proxy.ts` (Next 16's middleware convention) sits in front of both: it normalizes casing on `/collections/:type`, and on `/admin` routes only, checks the session to redirect unauthenticated visitors off `/admin` and authenticated visitors off `/admin/login`.
 
 ### Component organisation
 
@@ -169,20 +172,34 @@ Content is defined in `backend/prisma/schema.prisma` and served through typed fe
 
 - **Resource** — `title`, `description`, `url`, `logo?`, `createdAt`, and a `type`
   - `type` — enum: `Tools | References | Libraries | Inspiration | Services | Extensions | Social`
-  - `status?` — optional one-to-many relation (e.g. "Paid", "Freemium")
+  - `status?` — optional many-to-one relation (each resource has at most one status, e.g. "Paid" or "Freemium"; a status can apply to many resources)
   - `categories` — **many-to-many** with Category; a resource can belong to multiple categories and appears under each on the public `/categories` page
 - **Category** — `id`, `name`
 - **Status** — `id`, `name`
 
 There is no separate tagging system — categories serve as the primary filtering/organizing mechanism, and a resource can carry several.
 
+All fetch wrappers build their URLs through `lib/apiUrl.ts`: in the browser, requests go to the frontend's own `/api/*` path; on the server (server components and `proxy.ts`), they go directly to the backend via `BACKEND_URL`. See [Deployment](#deployment).
+
 ### Type sync
 
-The frontend's `Type` enum is generated from the backend's Prisma schema. `backend/scripts/generateFrontendTypes.ts` reads Prisma's generated enum and writes `frontend/src/lib/generatedType.ts`; `lib/types.ts` re-exports `Type` from that file. Run `npm run sync-types` after changing the `Type` enum in `schema.prisma` and migrating, alongside the existing `migrate`/`generate`/`seed` scripts.
+The frontend's `Type` is generated from the backend's Prisma schema rather than maintained by hand. `backend/scripts/generateFrontendTypes.ts` reads Prisma's generated enum and writes `frontend/src/lib/generatedType.ts`, which the frontend imports `Type` from. After changing the `Type` enum in `schema.prisma` and migrating, run `npm run generate-frontend-types` from `backend/` and commit the updated `generatedType.ts`.
+
+`generatedType.ts` is committed on purpose: the frontend is deployed on its own and has no access to the backend's generated Prisma client, which is gitignored and only created by `prisma generate`.
 
 ### API
 
 The Express backend (`backend/src/`) mounts one route file per resource type — `resourceRoutes.ts`, `categoryRoutes.ts`, `statusRoutes.ts` — plus `authRoutes.ts` for `/auth/login`, `/auth/logout`, and `/auth/session`, and `suggestRoutes.ts` for the public `/suggest` endpoint, which sends an email via Resend rather than writing to the database. `authMiddleware.ts` checks `req.session.isAdmin` and is applied only to write routes (POST/PATCH/DELETE); all GET routes and `/suggest` are public. `seed.ts` handles bulk-populating the database (`npm run seed`), kept private — see [Installation & Setup](#installation--setup).
+
+### Deployment
+
+The frontend runs on **Vercel**, the Express API on **Render**, and PostgreSQL on **Neon**.
+
+Browser requests go to `/api/*` on the Vercel domain, which a rewrite in `next.config.ts` forwards to the Render backend. This keeps the session cookie first-party: it works with `SameSite=Lax`, and `proxy.ts` can read it to gate `/admin`. Calling the backend directly from the browser would require a cross-site `SameSite=None` cookie instead, which some browsers block by default. In production the cookie is also `Secure`, with Express set to `trust proxy` because Render terminates HTTPS in front of the app.
+
+Public pages use incremental static regeneration (`revalidate = 60`), so visitors are served cached pages even while Render's free tier is cold-starting, and new content appears within a minute. The admin panel is fully dynamic (`force-dynamic`), so edits show immediately.
+
+Pushes to `main` deploy both services automatically, and any pending Prisma migrations are applied to Neon during Render's build (`prisma migrate deploy`). Work happens on `dev` and is merged into `main` through pull requests, with Vercel building a preview of each one first.
 
 ### Theming and global state
 
@@ -206,9 +223,9 @@ The app has two sides. **Public visitors** have a read-only experience, with no 
 │   │   ├── 📄 schema.prisma                       → source of truth: models, relations, and Type enum
 │   │   └── 📄 seed.ts                              → bulk-population script
 │   ├── 📁 scripts
-│   │   └── 📄 generateFrontendTypes.ts             → regenerates frontend's Type from Prisma's enum (npm run sync-types)
+│   │   └── 📄 generateFrontendTypes.ts             → regenerates frontend's Type from Prisma's enum (npm run generate-frontend-types)
 │   ├── 📁 src
-│   │   ├── 📁 generated                              → Prisma's auto-generated client and enums
+│   │   ├── 📁 generated                              → Prisma's generated client and enums (gitignored, created by prisma generate)
 │   │   ├── 📄 app.ts                                  → Express app, session config, CORS, route mounting
 │   │   ├── 📄 authMiddleware.ts                        → checks req.session.isAdmin, applied to write routes only
 │   │   ├── 📄 authRoutes.ts                             → /auth/login, /auth/logout, /auth/session
@@ -242,7 +259,7 @@ The app has two sides. **Public visitors** have a read-only experience, with no 
 │   │   │   │   │   └── 📁 [type]                        → per-type gallery
 │   │   │   │   │       ├── 📁 ResourceFinder            → search and multi-category filter
 │   │   │   │   │       ├── 📁 ResourceGrid
-│   │   │   │   │       │   ├── 📁 ResourceCard                → single resource card, reused across every listing page
+│   │   │   │   │       │   └── 📁 ResourceCard                → single resource card, reused across every listing page
 │   │   │   │   │       ├── 📁 ResourceHeader
 │   │   │   │   │       ├── 📄 GalleryContent.tsx              → client component holding search/filter state (page.tsx stays server-side)
 │   │   │   │   │       ├── 🎨 page.module.scss
@@ -256,7 +273,7 @@ The app has two sides. **Public visitors** have a read-only experience, with no 
 │   │   │   │   │   └── 📁 Header
 │   │   │   │   ├── 📁 resources                        → all-resources index (ResourceGrid)
 │   │   │   │   ├── 📁 suggest                            → suggest-a-resource form with live ResourceCard preview
-│   │   │   │   ├── 📄 layout.tsx                          → Header/{children}/Footer
+│   │   │   │   ├── 📄 layout.tsx                          → Header/{children}/Footer; revalidate = 60
 │   │   │   │   ├── 🎨 page.module.scss
 │   │   │   │   └── 📄 page.tsx                              → homepage (Hero, Stats)
 │   │   │   ├── 📁 admin                             → plain folder (not a route group)
@@ -268,19 +285,20 @@ The app has two sides. **Public visitors** have a read-only experience, with no 
 │   │   │   │   │   ├── 📁 AdminTabs                        → client-side tab switch, no separate routes
 │   │   │   │   │   └── 📁 Header
 │   │   │   │   ├── 📁 login                            → public login form (only unauthenticated page under /admin)
-│   │   │   │   ├── 📄 layout.tsx                          → overrides metadata: noindex/nofollow
+│   │   │   │   ├── 📄 layout.tsx                          → overrides metadata: noindex/nofollow; force-dynamic
 │   │   │   │   ├── 🎨 page.module.scss
 │   │   │   │   └── 📄 page.tsx                              → fetches resources/statuses/categories, renders AdminTabs
 │   │   │   ├── 📄 favicon.ico
-│   │   │   ├── 📄 layout.tsx                        → root: <html>/<body>/<Providers>, site-wide metadata
+│   │   │   ├── 📄 layout.tsx                        → root: <html>/<body>/<Providers>, site-wide metadata and metadataBase
 │   │   │   ├── 🖼️ opengraph-image.png                 → file-convention OG image
 │   │   │   └── 📄 providers.tsx                        → next-themes Providers wrapper
 │   │   ├── 📁 constants
 │   │   │   ├── 📄 categoryMeta.ts                    → per-category display color
 │   │   │   └── 📄 typeMeta.ts                          → per-Type label/icon/description
 │   │   ├── 📁 lib
-│   │   │   ├── 📄 generatedType.ts                → auto-generated Type const/type
-│   │   │   └── 📄 types.ts                           → Resource/Category/Status/Admin/Suggestion; re-exports Type
+│   │   │   ├── 📄 apiUrl.ts                       → /api path in the browser, BACKEND_URL on the server
+│   │   │   ├── 📄 generatedType.ts                → generated Type const/type (committed)
+│   │   │   └── 📄 types.ts                           → Resource/Category/Status/Admin/Suggestion
 │   │   ├── 📁 styles
 │   │   │   ├── 📁 abstracts
 │   │   │   │   ├── 🎨 _mixins.scss                → flex, icon, admin-table, tint-bg/tint-border, glow, etc.
@@ -292,7 +310,7 @@ The app has two sides. **Public visitors** have a read-only experience, with no 
 │   │   │   └── 🎨 globals.scss
 │   │   └── 📄 proxy.ts                            → Next 16 middleware equivalent; normalizes /collections/:type casing, gates /admin
 │   ├── 📄 eslint.config.mjs
-│   ├── 📄 next.config.ts                          → remote image patterns (geticon.dev, VS Code Marketplace CDN, etc.)
+│   ├── 📄 next.config.ts                          → /api rewrite to the backend, remote image patterns
 │   ├── ⚙️ package-lock.json
 │   ├── ⚙️ package.json
 │   └── ⚙️ tsconfig.json
@@ -307,13 +325,38 @@ The app has two sides. **Public visitors** have a read-only experience, with no 
 
 ### Live demo
 
-_(upcoming link)_ — will be added once hosting (Vercel + Render + Neon) is live.
+[resources-hub-lovat.vercel.app](https://resources-hub-lovat.vercel.app/)
+
+> The backend runs on Render's free tier, so the first request after a period of inactivity can take 30–60 seconds while it wakes up.
 
 ### Local development
 
 > For local reference only — this project isn't licensed for reuse (see [License](#license)).
 
-> The curated resource data (seed.ts) is kept private and isn't included in this repo, so a fresh clone starts with an empty database.
+> The curated resource data (`seed.ts`) is kept private and isn't included in this repo, so a fresh clone starts with an empty database.
+
+Requires Node.js 24 (the backend runs `.ts` files directly) and a local PostgreSQL instance.
+
+**Environment variables**
+
+`backend/.env`:
+
+```dotenv
+DATABASE_URL=postgresql://user:password@localhost:5432/resource_hub
+PORT=3002
+FRONTEND_URL=http://localhost:3008
+SESSION_SECRET=any-long-random-string
+ADMIN_USERNAME=your-username
+ADMIN_PASSWORD_HASH=your-bcrypt-hash
+RESEND_API_KEY=your-resend-key
+RECIPIENT_EMAIL=you@example.com
+```
+
+`frontend/.env`:
+
+```dotenv
+BACKEND_URL=http://localhost:3002
+```
 
 **Backend**
 
@@ -332,7 +375,7 @@ npm install
 npm run dev
 ```
 
-Requires a local PostgreSQL instance and a `.env` in `backend/` with your database URL and hardcoded admin credentials (bcrypt-hashed password and username).
+The frontend runs on `http://localhost:3008` and the backend on `http://localhost:3002`.
 
 ---
 
@@ -346,7 +389,7 @@ Sprint planning and the full roadmap are tracked on Jira.
 
 ## Acknowledgements
 
-Inspired by [Jonas Schmedtmann](https://jonas.io/)'s resource page
+Inspired by [Jonas Schmedtmann](https://jonas.io/)'s resource page.
 
 ---
 

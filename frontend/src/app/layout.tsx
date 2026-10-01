@@ -4,6 +4,7 @@ import "../styles/globals.scss";
 import { Geist, Geist_Mono } from "next/font/google";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://resources-hub-lovat.vercel.app/"),
   title: "Resource Hub",
   description: "Resource Hub for developers of all skill levels",
   robots: {
