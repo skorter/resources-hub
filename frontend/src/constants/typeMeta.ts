@@ -1,4 +1,4 @@
-import type { Type } from "../../../backend/src/generated/prisma/enums";
+import type { Type } from "../lib/generatedType";
 import { type LucideIcon } from "lucide-react";
 import {
   Wrench,

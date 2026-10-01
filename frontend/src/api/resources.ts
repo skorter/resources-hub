@@ -1,5 +1,5 @@
 import type { Resource } from "../lib/types";
-import type { Type } from "../../../backend/src/generated/prisma/enums";
+import type { Type } from "../lib/generatedType";
 import { apiUrl } from "../lib/apiUrl";
 
 // GET all resources
