@@ -1,21 +1,19 @@
 import type { Admin } from "../lib/types";
+import { apiUrl } from "../lib/apiUrl";
 
 // POST a login request
 const createLogin = async (
   admin: Admin,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(admin),
+    const response = await fetch(apiUrl("/auth/login"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify(admin),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -35,16 +33,13 @@ const createLogout = async (): Promise<{
   error?: string;
 }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+    const response = await fetch(apiUrl("/auth/logout"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -67,17 +62,14 @@ const getSession = async (
   isAdmin: boolean;
 }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/session`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...(cookies ? { Cookie: cookies } : {}),
-        },
-        credentials: "include",
+    const response = await fetch(apiUrl("/auth/session"), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookies ? { Cookie: cookies } : {}),
       },
-    );
+      credentials: "include",
+    });
 
     if (!response.ok) {
       return { success: false, isAdmin: false, error: "Failed to get session" };

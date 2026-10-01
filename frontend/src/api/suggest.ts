@@ -1,18 +1,16 @@
 import type { Suggestion } from "../lib/types";
+import { apiUrl } from "../lib/apiUrl";
 
 const createSuggestion = async (
   suggestion: Suggestion,
 ): Promise<{ success: string } | { error: string }> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/suggest`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(suggestion),
+  const response = await fetch(apiUrl("/suggest"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify(suggestion),
+  });
 
   if (!response.ok) {
     const errorData = await response.json();

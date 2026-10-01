@@ -1,15 +1,13 @@
 import type { Resource } from "../lib/types";
 import type { Type } from "../../../backend/src/generated/prisma/enums";
+import { apiUrl } from "../lib/apiUrl";
 
 // GET all resources
 const getResources = async (): Promise<Resource[] | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`,
-      {
-        method: "GET",
-      },
-    );
+    const response = await fetch(apiUrl("/resources"), {
+      method: "GET",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -30,12 +28,9 @@ const getResourceById = async (
   id: number,
 ): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${id}`,
-      {
-        method: "GET",
-      },
-    );
+    const response = await fetch(apiUrl(`/resources/${id}`), {
+      method: "GET",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -62,17 +57,14 @@ const createResource = async (resource: {
   statusId?: number;
 }): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(resource),
+    const response = await fetch(apiUrl("/resources"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify(resource),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -102,17 +94,14 @@ const updateResource = async (
   },
 ): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(resource),
+    const response = await fetch(apiUrl(`/resources/${id}`), {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify(resource),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -133,13 +122,10 @@ const deleteResource = async (
   id: number,
 ): Promise<Resource | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      },
-    );
+    const response = await fetch(apiUrl(`/resources/${id}`), {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

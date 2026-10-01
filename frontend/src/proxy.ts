@@ -11,15 +11,15 @@ export async function proxy(request: NextRequest) {
     );
   }
 
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
+
   const cookies = request.headers.get("cookie") ?? undefined;
   const session = await getSession(cookies);
   const isAdmin = session.success && session.isAdmin;
 
-  if (
-    pathname.startsWith("/admin") &&
-    !pathname.startsWith("/admin/login") &&
-    !isAdmin
-  ) {
+  if (!pathname.startsWith("/admin/login") && !isAdmin) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 

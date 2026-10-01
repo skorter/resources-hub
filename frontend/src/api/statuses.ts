@@ -1,14 +1,12 @@
 import type { Status } from "../lib/types";
+import { apiUrl } from "../lib/apiUrl";
 
 // GET all statuses
 const getStatuses = async (): Promise<Status[] | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/statuses`,
-      {
-        method: "GET",
-      },
-    );
+    const response = await fetch(apiUrl("/statuses"), {
+      method: "GET",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -29,12 +27,9 @@ const getStatusById = async (
   id: number,
 ): Promise<Status | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/statuses/${id}`,
-      {
-        method: "GET",
-      },
-    );
+    const response = await fetch(apiUrl(`/statuses/${id}`), {
+      method: "GET",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -55,17 +50,14 @@ const createStatus = async (status: {
   name: string;
 }): Promise<Status | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/statuses`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(status),
+    const response = await fetch(apiUrl("/statuses"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify(status),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -87,17 +79,14 @@ const updateStatus = async (
   status: { name?: string },
 ): Promise<Status | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/statuses/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(status),
+    const response = await fetch(apiUrl(`/statuses/${id}`), {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify(status),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -118,13 +107,10 @@ const deleteStatus = async (
   id: number,
 ): Promise<Status | { error: string }> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/statuses/${id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      },
-    );
+    const response = await fetch(apiUrl(`/statuses/${id}`), {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

@@ -4,10 +4,13 @@ import session from "express-session";
 import cors from "cors";
 
 dotenv.config();
+const isInProduction = process.env.NODE_ENV === "production";
 
 const app: Express = express();
 app.use(express.json());
 app.use(cors({ origin: process.env.FRONTEND_URL!, credentials: true }));
+
+app.set("trust proxy", 1);
 
 app.use(
   session({
@@ -15,9 +18,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Set to true if using HTTPS
+      secure: isInProduction, // Set to true if using HTTPS in production
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: isInProduction ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   }),
