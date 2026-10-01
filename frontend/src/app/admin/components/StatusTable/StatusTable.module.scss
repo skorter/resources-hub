@@ -1,0 +1,66 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
+.statusTable {
+  .header {
+    @include admin-table-header;
+
+    .addButton {
+      @include admin-add-button;
+    }
+  }
+
+  .table {
+    @include admin-table-base;
+
+    th:nth-child(1) {
+      width: 8%;
+    } // ID
+    th:nth-child(2) {
+      width: 20%;
+    } // Name
+    th:nth-child(3) {
+      width: 52%;
+    } // Resources
+    th:nth-child(4) {
+      width: 20%;
+    } // Actions
+
+    .tableHeaderRow {
+      @include admin-table-header-row;
+    }
+
+    .tableHeaderCell {
+      @include admin-table-header-cell;
+    }
+
+    .tableCell {
+      @include admin-table-cell;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .actionsRow {
+      @include flex(row, stretch, center, $space-xs);
+      width: 100%;
+
+      .editButton,
+      .saveButton {
+        @include admin-actions-button;
+      }
+
+      .deleteButton,
+      .cancelButton {
+        @include admin-actions-button(right);
+      }
+
+      .icon {
+        @include icon($icon-md);
+      }
+
+      .deleteButton .icon {
+        stroke: var(--danger);
+      }
+    }
+  }
+}

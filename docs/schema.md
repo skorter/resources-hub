@@ -4,6 +4,7 @@ RESOURCE {
 Int id
 String title
 String description
+String logo
 Type type
 String url
 DateTime createdAt

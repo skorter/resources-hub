@@ -1,0 +1,109 @@
+@use "../../../../../styles/abstracts/mixins" as *;
+@use "../../../../../styles/abstracts/variables" as *;
+
+.resourceFinder {
+  @include flex(column, stretch, flex-start, $space-lg);
+
+  .searchBar {
+    max-width: 25%;
+
+    .label {
+      padding: $space-md $space-lg;
+      @include flex(row, center, flex-start, $space-sm);
+      background-color: var(--gallery-card-background);
+      @include tint-border(var(--gallery-card-background), 90%, #fff);
+      border-radius: $radius-lg;
+      color: var(--stats-text);
+      transition: all 0.2s ease;
+
+      &:focus-within {
+        border-color: var(--gallery-color);
+        @include glow(var(--gallery-color));
+      }
+
+      input {
+        caret-color: var(--gallery-color);
+        background-color: transparent;
+        width: 100%;
+        color: var(--foreground);
+
+        &::-webkit-search-cancel-button {
+          -webkit-appearance: none;
+          appearance: none;
+          height: $icon-sm;
+          width: $icon-sm;
+          cursor: pointer;
+          background: var(--stats-text);
+          mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="black" stroke-width="2" fill="none"/></svg>')
+            no-repeat center;
+          mask-size: contain;
+        }
+      }
+
+      .icon {
+        @include icon($icon-sm);
+        color: var(--stats-text);
+      }
+    }
+  }
+
+  .categories {
+    @include flex(row, stretch, flex-start, $space-lg);
+    flex-wrap: wrap;
+
+    .categoryButton {
+      padding: $space-sm $space-lg;
+      @include flex(row, center, center);
+      background-color: var(--gallery-card-background);
+      border-radius: $radius-lg;
+      @include tint-border(var(--gallery-card-background), 90%, #fff);
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &.active {
+        @include tint-border(var(--category-color), 90%);
+        @include glow(var(--category-color));
+      }
+
+      &.active .categoryName::before {
+        background-color: var(--category-color);
+      }
+
+      .categoryName {
+        font-size: 0.95rem;
+        position: relative;
+        padding-left: $space-sm;
+        color: var(--stats-text);
+
+        &::before {
+          content: "";
+          position: absolute;
+          width: $space-sm;
+          height: $space-sm;
+          top: 50%;
+          left: 0;
+          transform: translate(-50%, -50%);
+          border-radius: 50%;
+          @include tint-bg(var(--category-color), 75%);
+        }
+      }
+    }
+  }
+
+  .results {
+    color: var(--stats-text);
+
+    .amount,
+    .input {
+      color: var(--foreground);
+    }
+
+    .category {
+      color: var(--category-color);
+
+      .separator {
+        color: var(--stats-text);
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
+.header {
+  @include flex(row, center, space-between);
+  padding: $space-lg $space-2xl;
+
+  .left {
+    @include flex(row, center, flex-start, $space-sm);
+
+    .icon {
+      @include icon($icon-sm, 3);
+    }
+  }
+
+  .logoutButton {
+    @include flex(row, center, flex-start, $space-sm);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: $space-sm $space-lg;
+    border-radius: $radius-sm;
+    background-color: var(--foreground);
+    color: var(--background);
+    font-weight: 600;
+
+    .icon {
+      @include icon($icon-sm, 3);
+    }
+  }
+}

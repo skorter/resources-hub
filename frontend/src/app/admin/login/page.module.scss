@@ -1,0 +1,79 @@
+@use "../../../styles/abstracts/mixins" as *;
+@use "../../../styles/abstracts/variables" as *;
+
+.login {
+  width: 100%;
+  min-height: 100vh;
+  @include flex;
+
+  .container {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem 2.5rem;
+    border-radius: $radius-lg;
+    margin: 0 auto;
+    @include flex(column, center, center, $space-2xl);
+
+    .header {
+      @include flex(column, center, center, $space-sm);
+
+      .title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--foreground);
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--text-muted);
+      }
+    }
+
+    .form {
+      width: 100%;
+      @include flex(column, center, center, $space-xl);
+
+      .inputGroup {
+        width: 100%;
+        @include flex(column, flex-start, center, $space-md);
+
+        .label {
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .input {
+          width: 100%;
+          padding: 0.65rem 0.75rem;
+          border: 1px solid var(--input-border);
+          background-color: var(--input-background);
+          color: var(--foreground);
+          border-radius: $radius-md;
+
+          &:focus {
+            outline: none;
+            border-color: var(--input-border-focus);
+          }
+        }
+      }
+
+      .button {
+        width: 100%;
+        padding: 0.65rem 1rem;
+        border: none;
+        border-radius: $radius-md;
+        cursor: pointer;
+        font-weight: 500;
+        background-color: var(--foreground);
+        color: var(--background);
+      }
+    }
+
+    .warning {
+      font-size: 0.85rem;
+      color: var(--text-subtle);
+      text-align: center;
+    }
+  }
+}

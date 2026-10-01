@@ -1,0 +1,54 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
+.galleryGrid {
+  max-width: 90%;
+  margin: 0 auto;
+  @include flex(row, stretch, center, $space-2xl);
+  flex-wrap: wrap;
+
+  .card {
+    padding: $space-lg;
+    flex: 0 1 300px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    row-gap: $space-xs;
+    column-gap: $space-lg;
+    align-items: center;
+    justify-content: start;
+    text-align: left;
+    background-color: var(--gallery-card-background);
+    border-radius: $radius-md;
+    @include tint-border(var(--icon-color));
+
+    .iconWrapper {
+      grid-row: 1 / span 2;
+      @include flex(row, center, center);
+      width: $space-3xl;
+      height: $space-3xl;
+      border-radius: $radius-md;
+      @include tint-bg(var(--icon-color));
+
+      .icon {
+        @include icon($icon-lg);
+        color: var(--icon-color);
+      }
+    }
+
+    .title {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .description {
+      grid-column: 2;
+      grid-row: 2;
+      font-size: 0.875rem;
+      color: var(--gallery-card-description-text);
+      line-height: 1.25rem;
+    }
+  }
+}

@@ -1,0 +1,159 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
+.resourceTable {
+  position: relative;
+
+  .viewModal {
+    position: fixed;
+    inset: 0;
+    @include flex(row, center, center);
+    background-color: var(--overlay);
+    z-index: 1000;
+
+    .viewModalContent {
+      position: relative;
+      max-width: 350px;
+      background-color: var(--background);
+      padding: $space-xl;
+      border: 1px solid var(--table-border-soft);
+      box-shadow: var(--shadow);
+
+      .closeButton {
+        position: absolute;
+        top: $space-sm;
+        right: $space-sm;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--foreground);
+
+        .icon {
+          @include icon($icon-sm, 3);
+        }
+      }
+    }
+  }
+
+  .header {
+    @include admin-table-header;
+
+    .addButton {
+      @include admin-add-button;
+    }
+  }
+
+  .table {
+    @include admin-table-base;
+
+    th:nth-child(1) {
+      width: 4%;
+    } // ID
+    th:nth-child(2) {
+      width: 12%;
+    } // Title
+    th:nth-child(3) {
+      width: 8%;
+    } // Type
+    th:nth-child(4) {
+      width: 20%;
+    } // Description
+    th:nth-child(5) {
+      width: 15%;
+    } // URL
+    th:nth-child(6) {
+      width: 14%;
+    } // Logo
+    th:nth-child(7) {
+      width: 8%;
+    } // Status
+    th:nth-child(8) {
+      width: 12%;
+    } // Categories
+    th:nth-child(9) {
+      width: 7%;
+    } // Actions
+
+    td:nth-child(8),
+    td:nth-child(9) {
+      white-space: normal;
+      overflow: visible;
+    }
+
+    .tableHeaderRow {
+      @include admin-table-header-row;
+    }
+
+    .tableHeaderCell {
+      @include admin-table-header-cell;
+    }
+
+    .tableCell {
+      @include admin-table-cell;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:has(input),
+      &:has(select) {
+        white-space: normal;
+        overflow: visible;
+      }
+
+      .categoryCheckboxes {
+        @include flex(column, stretch, flex-start);
+      }
+    }
+
+    .actionsRow {
+      @include flex(row, stretch, center, $space-xs);
+      width: 100%;
+
+      .viewButton {
+        @include admin-actions-button;
+      }
+
+      .actionsWrapper {
+        position: relative;
+        flex-shrink: 0;
+        display: flex;
+
+        .moreActionsButton {
+          @include admin-actions-button(right);
+
+          .icon {
+            @include icon($icon-sm, 2.5);
+          }
+        }
+
+        .actionsMenu {
+          position: absolute;
+          top: 100%;
+          right: 0;
+          background-color: var(--background);
+          border: 1px solid var(--foreground);
+          box-shadow: var(--shadow);
+          z-index: 100;
+
+          .editButton,
+          .deleteButton {
+            @include flex(row, center, flex-start, $space-sm);
+            width: 100%;
+            padding: $space-sm $space-lg;
+            background: none;
+            border: 1px solid var(--table-border-soft);
+            cursor: pointer;
+
+            .icon {
+              @include icon($icon-sm, 3);
+            }
+          }
+
+          .deleteButton .icon {
+            stroke: var(--danger);
+          }
+        }
+      }
+    }
+  }
+}

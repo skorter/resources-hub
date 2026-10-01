@@ -1,0 +1,65 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
+.header {
+  width: 100%;
+  @include flex(row, center, space-between);
+  padding: $space-xl $space-4xl;
+  height: 100%;
+
+  .brand {
+    @include flex(row, center, flex-start, $space-md);
+
+    .icon {
+      @include icon($icon-lg, 2);
+      color: var(--primary);
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+
+      .label {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .nav {
+    @include flex(row, center, flex-start, $space-lg);
+
+    .link {
+      padding: $space-sm $space-md;
+      border-radius: $radius-md;
+      background-color: transparent;
+      transition: background-color 0.2s ease-in-out;
+
+      &:hover:not(.suggest-resource) {
+        @include tint-bg(var(--primary), 30%);
+      }
+    }
+
+    .suggest-resource,
+    .back-to-all-galleries {
+      @include flex(row, center, flex-start, $space-sm);
+      background-color: var(--primary);
+    }
+
+    .back-to-all-galleries {
+      background-color: transparent;
+    }
+
+    .themeToggle {
+      height: $space-2xl;
+      width: $space-2xl;
+      color: var(--primary);
+      background-color: var(--gallery-card-background);
+      border-radius: $radius-md;
+      @include flex(row, center, center);
+    }
+
+    .icon {
+      @include icon($icon-sm);
+    }
+  }
+}

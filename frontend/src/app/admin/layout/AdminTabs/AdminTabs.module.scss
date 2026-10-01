@@ -1,0 +1,25 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles/abstracts/variables" as *;
+
+.navigation {
+  @include flex(column, stretch, flex-start);
+
+  .tabList {
+    @include flex(row, stretch, flex-start, $space-lg);
+    border-bottom: 1px solid var(--foreground);
+
+    button {
+      padding: $space-sm $space-lg;
+      border: none;
+      background-color: var(--table-header-background);
+      color: var(--table-header-text);
+      cursor: pointer;
+    }
+
+    .active {
+      font-weight: bold;
+      color: var(--table-header-background);
+      background-color: var(--table-header-text);
+    }
+  }
+}
