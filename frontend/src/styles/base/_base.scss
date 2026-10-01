@@ -19,4 +19,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  > header {
+    grid-row: 1;
+  }
+  > footer {
+    grid-row: 3;
+  }
+  > :not(header):not(footer) {
+    grid-row: 2;
+  }
 }
