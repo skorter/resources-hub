@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import Header from "@/app/(site)/layout/Header/Header";
 import Footer from "@/app/(site)/layout/Footer/Footer";
 
